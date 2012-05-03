@@ -1,6 +1,6 @@
 define(["config/config"], function(config) {
-    config.isDev = false;
-	
+    config.isDev = true;
+
     // Tracking and statistics
     config.Tracking = {
         GoogleAnalytics: {

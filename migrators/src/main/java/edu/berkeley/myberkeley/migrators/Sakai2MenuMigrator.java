@@ -60,7 +60,6 @@ public class Sakai2MenuMigrator implements PropertyMigrator {
         migragePubSpace(properties);
       }
     }
-    
     return false;
   }
 
@@ -103,9 +102,8 @@ public class Sakai2MenuMigrator implements PropertyMigrator {
         }
       }
     }
-    
   }
-  
+
   private void migrateStruc0(Content privspace) throws JSONException {
     JSONObject struc0JSON = findStructure0(privspace);
     JSONObject menuObj = new JSONObject();
@@ -137,7 +135,7 @@ public class Sakai2MenuMigrator implements PropertyMigrator {
   }
 
   private void migrateRows(Content privspace) {
-    
+
 //    config.defaultprivstructure['${refid}2345'] = {
 //        'rows': [
 //            {
@@ -159,8 +157,7 @@ public class Sakai2MenuMigrator implements PropertyMigrator {
   }
 
   private void migrateDashboard(Content privspace) {
-    
-    
+
 //    config.defaultprivstructure['${refid}0']['${refid}5'].dashboard.columns.column1.push({
 //      'uid': '${refid}1234',
 //      'visible': 'block',
@@ -168,7 +165,7 @@ public class Sakai2MenuMigrator implements PropertyMigrator {
 //  });
   }
 
-  
+
   private JSONObject findStructure0(Content foundContent) throws JSONException {
     JSONObject structure0 = null;
     Object structureObj = foundContent.getProperty("structure0");
@@ -176,7 +173,7 @@ public class Sakai2MenuMigrator implements PropertyMigrator {
       structure0 = new JSONObject(structureObj.toString());
     }
     return structure0;
-  }                     
+  }
 
   private void migragePubSpace(Map<String, Object> properties) {
 
