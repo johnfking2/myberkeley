@@ -1,7 +1,11 @@
 package edu.berkeley.myberkeley.provision;
 
-import edu.berkeley.myberkeley.api.provision.CourseInfoProvisionResult;
-import edu.berkeley.myberkeley.api.provision.CourseInfoService;
+import static edu.berkeley.myberkeley.api.provision.ClassPageProvisionService.CLASS_IDS_PARAM_NAME;
+import static edu.berkeley.myberkeley.api.provision.ClassPageProvisionService.CLASS_ID_PARAM_NAME;
+import static edu.berkeley.myberkeley.api.provision.ClassPageProvisionService.CLASS_PAGE_PARAM_NAME;
+
+import edu.berkeley.myberkeley.api.provision.ClassPageProvisionResult;
+import edu.berkeley.myberkeley.api.provision.ClassPageProvisionService;
 
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.sling.SlingServlet;
@@ -30,17 +34,14 @@ import javax.servlet.http.HttpServletResponse;
 @SlingServlet(methods = { "GET", "POST" }, paths = {"/system/myberkeley/courseInfo"},
     generateService = true, generateComponent = true)
 
-public class CourseInfoProvisionServlet extends SlingAllMethodsServlet {
+public class ClassPageProvisionServlet extends SlingAllMethodsServlet {
   private static final long serialVersionUID = -6006111536170097906L;
   
-  private static final Logger LOGGER = LoggerFactory.getLogger(CourseInfoProvisionServlet.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ClassPageProvisionServlet.class);
   
-  static final String CLASS_PAGE_PARAM_NAME = "classPage";
-  static final String CLASS_IDS_PARAM_NAME = "classIds";
-  static final String CLASS_ID_PARAM_NAME = "classId";
 
   @Reference
-  transient CourseInfoService courseInfoService;
+  transient ClassPageProvisionService classPageProvisionService;
 
   @Override
   protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response)
@@ -51,7 +52,7 @@ public class CourseInfoProvisionServlet extends SlingAllMethodsServlet {
     response.setCharacterEncoding("UTF-8");
     String classId = request.getParameter(CLASS_ID_PARAM_NAME);
     if (classId != null) {
-      JSONObject courseInfo = this.courseInfoService.getCourseInfo(classId);
+      JSONObject courseInfo = this.classPageProvisionService.getClassPage(classId);
       if (courseInfo != null) {
         try {
           if (Arrays.asList(request.getRequestPathInfo().getSelectors()).contains("tidy")) {
@@ -81,7 +82,7 @@ public class CourseInfoProvisionServlet extends SlingAllMethodsServlet {
     String courseInfoStr = request.getParameter(CLASS_PAGE_PARAM_NAME);
     String[] courseds = request.getParameterValues(CLASS_IDS_PARAM_NAME);
     if (courseInfoStr != null) {
-      provisionCourseInfo(courseInfoStr, request, response);
+      provisionClassPage(courseInfoStr, request, response);
     }
     else if (courseds != null) {
       provisionCourseInfo(courseds, request, response);
@@ -94,12 +95,12 @@ public class CourseInfoProvisionServlet extends SlingAllMethodsServlet {
     
   }
 
-  private void provisionCourseInfo(String courseInfoStr, SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {
-    CourseInfoProvisionResult result = null;
+  private void provisionClassPage(String courseInfoStr, SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {
+    ClassPageProvisionResult result = null;
     try {
       LOGGER.debug("provisioning:\n", courseInfoStr);
       JSONObject courseInfo = new JSONObject(courseInfoStr);
-      result = this.courseInfoService.provisionCourseInfo(courseInfo);
+      result = this.classPageProvisionService.provisionClassPage(courseInfo);
       ExtendedJSONWriter jsonWriter = new ExtendedJSONWriter(response.getWriter());
       jsonWriter.setTidy(Arrays.asList(request.getRequestPathInfo().getSelectors()).contains("tidy"));
       jsonWriter.object();
@@ -116,9 +117,9 @@ public class CourseInfoProvisionServlet extends SlingAllMethodsServlet {
   }
 
   private void provisionCourseInfo(String[] classIds, SlingHttpServletRequest request,SlingHttpServletResponse response) throws IOException {
-    CourseInfoProvisionResult result = null;
+    ClassPageProvisionResult result = null;
     for (int i = 0; i < classIds.length; i++) {
-      result = this.courseInfoService.provisionCourseInfo(classIds[i]);
+      result = this.classPageProvisionService.provisionClassPage(classIds[i]);
     }
   }
 }

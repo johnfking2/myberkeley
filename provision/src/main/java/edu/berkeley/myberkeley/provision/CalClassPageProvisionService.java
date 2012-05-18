@@ -1,12 +1,12 @@
 package edu.berkeley.myberkeley.provision;
 
-import edu.berkeley.myberkeley.api.provision.CourseInfoProvisionResult;
-import edu.berkeley.myberkeley.api.provision.CourseInfoService;
+import edu.berkeley.myberkeley.api.provision.ClassPageProvisionResult;
+import edu.berkeley.myberkeley.api.provision.ClassPageProvisionService;
 import edu.berkeley.myberkeley.api.provision.SynchronizationState;
-import edu.berkeley.myberkeley.provision.provide.CourseAttributeProvider;
-import edu.berkeley.myberkeley.provision.provide.OracleCourseHeaderAttributeProvider;
-import edu.berkeley.myberkeley.provision.render.CourseInfoHeaderRenderer;
-import edu.berkeley.myberkeley.provision.render.CourseInfoRenderer;
+import edu.berkeley.myberkeley.provision.provide.ClassAttributeProvider;
+import edu.berkeley.myberkeley.provision.provide.OracleClassPageHeaderAttributeProvider;
+import edu.berkeley.myberkeley.provision.render.ClassPageHeaderRenderer;
+import edu.berkeley.myberkeley.provision.render.ClassPageRenderer;
 
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
@@ -32,19 +32,20 @@ import java.util.List;
 import java.util.Map;
 
 @Component(metatype = true,
-    label = "CalCentral :: Course Info Provision Service", description = "Create & Store Course Info")
+    label = "CalCentral :: Class Page Provision Service", description = "Create & Store Class Page Data")
 @Service
-public class CalCourseInfoService implements CourseInfoService {
+public class CalClassPageProvisionService implements ClassPageProvisionService {
 
   public static final String STORE_NAME = "_myberkeley_classpage";
   public static final String STORE_RESOURCETYPE = "myberkeley/c";
   public static final String CLASS_PAGE_PROP_NAME = "classPzge";
   
-  private static final Logger LOGGER = LoggerFactory.getLogger(CalCourseInfoService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(CalClassPageProvisionService.class);
   
-  private Map<Component, CourseInfoRenderer> renderers;
+  private Map<Component, ClassAttributeProvider> attributeProviders;
   
-  private Map<Component, CourseAttributeProvider> attributeProviders;
+  private Map<Component, ClassPageRenderer> renderers;
+  
   
   private enum Component {
     classPageHeader
@@ -54,18 +55,18 @@ public class CalCourseInfoService implements CourseInfoService {
   Repository repository;
   
   @Override
-  public JSONObject getCourseInfo(String classId) {
-    JSONObject courseInfo = null;
+  public JSONObject getClassPage(String classId) {
+    JSONObject classPage = null;
     Session adminSession = null;
     try {
       adminSession = repository.login();
       ContentManager cm = adminSession.getContentManager();
-      Content courseInfoContent = cm.get(STORE_NAME + "/" + classId);
-      if (courseInfoContent != null) {
-        String courseInfoStr = (String) courseInfoContent.getProperty(CLASS_PAGE_PROP_NAME);
-        courseInfo = new JSONObject(courseInfoStr);
+      Content classPageContent = cm.get(STORE_NAME + "/" + classId);
+      if (classPageContent != null) {
+        String classPageStr = (String) classPageContent.getProperty(CLASS_PAGE_PROP_NAME);
+        classPage = new JSONObject(classPageStr);
       } else {
-        LOGGER.warn("No classPageInkfo found for classId: " + classId);
+        LOGGER.warn("No classPage data found for classId: " + classId);
       }
     } catch (ClientPoolException e) {
       LOGGER.warn(e.getMessage(), e);
@@ -84,37 +85,37 @@ public class CalCourseInfoService implements CourseInfoService {
         }
       }
     }
-    return courseInfo;
+    return classPage;
   }
 
   @Override
-  public CourseInfoProvisionResult provisionCourseInfo(JSONObject courseInfo) {
+  public ClassPageProvisionResult provisionClassPage(JSONObject classPageJson) {
     Session adminSession = null;
     SynchronizationState synchronizationState = SynchronizationState.error;
-    Content courseInfoContent = null;
+    Content classPageContent = null;
     String classId = null;
-    Map<String, Object> courseInfoMap = null;
+    Map<String, Object> classPageContentMap = null;
     try {
       adminSession = repository.loginAdministrative();
       ContentManager cm = adminSession.getContentManager();
-      classId = courseInfo.getString("classid");
+      classId = classPageJson.getString("classid");
       if (classId == null) {
         throw new JSONException("classid key missing");
       }
       String path = STORE_NAME + "/" + classId;
-      String stringifiedClaseeInfo = courseInfo.toString();
-      courseInfoContent = cm.get(path);
-      if (courseInfoContent == null) {
-        courseInfoMap = new HashMap<String, Object>(2);
-        courseInfoMap.put("sling:resourceType", STORE_RESOURCETYPE);
-        courseInfoMap.put("courseInfo", stringifiedClaseeInfo);
-        courseInfoContent = new Content(path, courseInfoMap);
-        cm.update(courseInfoContent);
+      String stringifiedClassPage = classPageJson.toString();
+      classPageContent = cm.get(path);
+      if (classPageContent == null) {
+        classPageContentMap = new HashMap<String, Object>(2);
+        classPageContentMap.put("sling:resourceType", STORE_RESOURCETYPE);
+        classPageContentMap.put(CLASS_PAGE_PROP_NAME, stringifiedClassPage);
+        classPageContent = new Content(path, classPageContentMap);
+        cm.update(classPageContent);
         synchronizationState = SynchronizationState.created;
       }
       else {
-        courseInfoContent.setProperty("courseInfo", stringifiedClaseeInfo);
-        cm.update(courseInfoContent);
+        classPageContent.setProperty("courseInfo", stringifiedClassPage);
+        cm.update(classPageContent);
         synchronizationState = SynchronizationState.refreshed;
       }
     } catch (ClientPoolException e) {
@@ -135,26 +136,26 @@ public class CalCourseInfoService implements CourseInfoService {
         }
       }
     }
-    return new CourseInfoProvisionResult(classId, synchronizationState);
+    return new ClassPageProvisionResult(classId, synchronizationState);
   }
 
   @Override
-  public CourseInfoProvisionResult provisionCourseInfo(String classId) {
-    CourseInfoProvisionResult result = null;
-    Content courseInfoContent = null;
-    Map<String, Object> courseInfoMap = null;
+  public ClassPageProvisionResult provisionClassPage(String classId) {
+    ClassPageProvisionResult result = null;
+    Content classPageContent = null;
+    Map<String, Object> classPageContentMap = null;
     Session adminSession = null;
     SynchronizationState synchronizationState = SynchronizationState.error;
     try {
       adminSession = repository.loginAdministrative();
       ContentManager cm = adminSession.getContentManager();
       String path = STORE_NAME + "/" + classId;
-      courseInfoContent = cm.get(path);
-      if (courseInfoContent == null) {
-        courseInfoMap = new HashMap<String, Object>(2);
-        courseInfoMap.put("sling:resourceType", STORE_RESOURCETYPE);
-//        courseInfoMap.put("courseInfo", stringifiedClaseeInfo);
-        JSONObject courseInfoJSON = buildJSON(classId);
+      classPageContent = cm.get(path);
+      if (classPageContent == null) {
+        classPageContentMap = new HashMap<String, Object>(2);
+        classPageContentMap.put("sling:resourceType", STORE_RESOURCETYPE);
+        JSONObject classPageJSON = buildJSON(classId);
+        classPageContentMap.put(CLASS_PAGE_PROP_NAME, classPageJSON.toString());
       }
     } catch (ClientPoolException e) {
       LOGGER.warn(e.getMessage(), e);
@@ -176,17 +177,17 @@ public class CalCourseInfoService implements CourseInfoService {
   }
   
   private JSONObject buildJSON(String classId) {
-    JSONObject courseInfo = null;
-    CourseAttributeProvider headerProvider = this.attributeProviders.get(Component.classPageHeader);
+    JSONObject classPageJSON = null;
+    ClassAttributeProvider headerProvider = this.attributeProviders.get(Component.classPageHeader);
     List<Map<String, Object>> headerAttriubesList = headerProvider.getAttributes(classId);
-    CourseInfoRenderer headerRenderer = this.renderers.get(Component.classPageHeader);
+    ClassPageRenderer headerRenderer = this.renderers.get(Component.classPageHeader);
     try {
       JSONObject headerJSON = headerRenderer.render(headerAttriubesList.get(0));
       LOGGER.debug("courseInfoHeader:" + headerJSON.toString());
     } catch (JSONException e) {
       LOGGER.warn(e.getMessage(), e);
     }
-    return courseInfo;
+    return classPageJSON;
   }
 
   @Activate @Modified
@@ -195,11 +196,11 @@ public class CalCourseInfoService implements CourseInfoService {
     Dictionary<?, ?> props = componentContext.getProperties();
     
     // cab't get an ImmutableMap to handle types so using plain HashMaqp    
-    this.attributeProviders = new HashMap<CalCourseInfoService.Component, CourseAttributeProvider>();
-    this.attributeProviders.put(Component.classPageHeader, new OracleCourseHeaderAttributeProvider());
+    this.attributeProviders = new HashMap<CalClassPageProvisionService.Component, ClassAttributeProvider>();
+    this.attributeProviders.put(Component.classPageHeader, new OracleClassPageHeaderAttributeProvider());
 
-    this.renderers = new HashMap<Component, CourseInfoRenderer>();
-    this.renderers.put(Component.classPageHeader, new CourseInfoHeaderRenderer(repository, null));
+    this.renderers = new HashMap<Component, ClassPageRenderer>();
+    this.renderers.put(Component.classPageHeader, new ClassPageHeaderRenderer(repository, null));
       
   }
 

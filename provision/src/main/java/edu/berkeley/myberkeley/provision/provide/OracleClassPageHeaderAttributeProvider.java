@@ -21,12 +21,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-@Component(label = "CalCentral :: Oracle Course Attribute Provider", description = "Provide CalCentral course attributes from Oracle connection")
+@Component(label = "CalCentral :: Oracle Class Attribute Provider", description = "Provide CalCentral class page attributes from Oracle connection")
 @Service
-public class OracleCourseHeaderAttributeProvider extends AbstractCourseAttributeProvider implements CourseAttributeProvider {
-  private static final Logger LOGGER = LoggerFactory.getLogger(OracleCourseHeaderAttributeProvider.class);
+public class OracleClassPageHeaderAttributeProvider extends AbstractClassAttributeProvider implements ClassAttributeProvider {
+  private static final Logger LOGGER = LoggerFactory.getLogger(OracleClassPageHeaderAttributeProvider.class);
   
-  static final String SELECT_COURSE_SQL = "select * from BSPACE_COURSE_INFO_VW bsi" +
+  static final String SELECT_CLASS_SQL = "select * from BSPACE_COURSE_INFO_VW bsi" +
           "where bsi.TERM_YR = ? and bsi.TERm_CD = ? and bsi.COURSE_CNTL_NUM = ?";
   
   static Map<String, String> ATTRIBUTE_TO_FIELD_MAP = ImmutableMap.of(
@@ -35,12 +35,12 @@ public class OracleCourseHeaderAttributeProvider extends AbstractCourseAttribute
   
   @Override
   public List<Map<String, Object>> getAttributes(String classId) {
-    List<Map<String, Object>> courseHeaderAttributes = null;;
+    List<Map<String, Object>> classPageHeaderAttributes = null;;
     Connection connection = null;
     PreparedStatement preparedStatement = null;
     try {
       connection = this.jdbcConnectionService.getConnection();
-      preparedStatement = connection.prepareStatement(SELECT_COURSE_SQL);
+      preparedStatement = connection.prepareStatement(SELECT_CLASS_SQL);
       try {
         long term = Long.parseLong(classId.substring(0, 3));
         preparedStatement.setLong(1, term);
@@ -60,14 +60,14 @@ public class OracleCourseHeaderAttributeProvider extends AbstractCourseAttribute
       
       ResultSet resultSet = preparedStatement.executeQuery();
       if (resultSet.next()) {
-        courseHeaderAttributes = getCourseHeaderAttributesFromResultSet(resultSet, classId);
+        classPageHeaderAttributes = getClassPageHeaderAttributesFromResultSet(resultSet, classId);
       } else {
-        courseHeaderAttributes = null;
+        classPageHeaderAttributes = null;
       }
     } catch (SQLException e) {
       LOGGER.warn(e.getMessage(), e);
     }
-    return courseHeaderAttributes;
+    return classPageHeaderAttributes;
   }
 //  TERM_YR
 //  TERM_CD
@@ -96,16 +96,16 @@ public class OracleCourseHeaderAttributeProvider extends AbstractCourseAttribute
 //  CATALOG_DESCRIPTION
 //  COURSE_OPTION
 //  DEPT_DESCRIPTION
-  private List<Map<String, Object>> getCourseHeaderAttributesFromResultSet(ResultSet resultSet, String classId) throws SQLException {
-    List<Map<String, Object>> courseHeaderAttributesList = new ArrayList<Map<String,Object>>();
+  private List<Map<String, Object>> getClassPageHeaderAttributesFromResultSet(ResultSet resultSet, String classId) throws SQLException {
+    List<Map<String, Object>> classPageHeaderAttributesList = new ArrayList<Map<String,Object>>();
     Map<String, Object> courseHeaderAttributes = new HashMap<String, Object>();
     courseHeaderAttributes.put("classid", classId);
     Set<Entry<String, String>> mapEntries = ATTRIBUTE_TO_FIELD_MAP.entrySet();
     for (Entry<String, String> mapEntry : mapEntries) {
       courseHeaderAttributes.put(mapEntry.getKey(), resultSet.getObject(mapEntry.getValue()));
     }
-    courseHeaderAttributesList.add(courseHeaderAttributes);
-    return courseHeaderAttributesList;
+    classPageHeaderAttributesList.add(courseHeaderAttributes);
+    return classPageHeaderAttributesList;
   }
 
 }

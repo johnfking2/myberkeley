@@ -5,6 +5,6 @@ import org.apache.sling.commons.json.JSONObject;
 
 import java.util.Map;
 
-public interface CourseInfoRenderer {
+public interface ClassPageRenderer {
   JSONObject render(Map<String, Object> attributes) throws JSONException;
 }
