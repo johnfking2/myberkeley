@@ -22,11 +22,11 @@ package edu.berkeley.myberkeley.api.provision;
  * Give callers enough information to display or log the results of an
  * account provision request.
  */
-public class CourseInfoProvisionResult {
+public class ClassPageProvisionResult {
   private String classId;
   private SynchronizationState synchronizationState;
 
-  public CourseInfoProvisionResult(String classId, SynchronizationState synchronizationState) {
+  public ClassPageProvisionResult(String classId, SynchronizationState synchronizationState) {
     this.classId = classId;
     this.synchronizationState = synchronizationState;
   }

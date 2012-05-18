@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  *
  */
-public interface CourseAttributeProvider {
+public interface ClassAttributeProvider {
   /**
    * 
    * @param classId

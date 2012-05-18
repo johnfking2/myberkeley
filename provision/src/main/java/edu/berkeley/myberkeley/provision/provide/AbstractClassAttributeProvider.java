@@ -8,7 +8,7 @@ import org.apache.felix.scr.annotations.Reference;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractCourseAttributeProvider implements CourseAttributeProvider {
+public abstract class AbstractClassAttributeProvider implements ClassAttributeProvider {
 
 
   @Reference
