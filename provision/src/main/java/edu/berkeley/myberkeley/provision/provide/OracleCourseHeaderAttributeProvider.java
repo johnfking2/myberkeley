@@ -1,6 +1,7 @@
-package edu.berkeley.myberkeley.provision;
+package edu.berkeley.myberkeley.provision.provide;
 
-import edu.berkeley.myberkeley.api.provision.CourseAttributeProvider;
+import com.google.common.collect.ImmutableMap;
+
 import edu.berkeley.myberkeley.api.provision.JdbcConnectionService;
 
 import org.apache.felix.scr.annotations.Component;
@@ -9,79 +10,65 @@ import org.apache.felix.scr.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 @Component(label = "CalCentral :: Oracle Course Attribute Provider", description = "Provide CalCentral course attributes from Oracle connection")
 @Service
-public class OracleCourseAttributeProvider implements CourseAttributeProvider {
-  private static final Logger LOGGER = LoggerFactory.getLogger(OracleCourseAttributeProvider.class);
+public class OracleCourseHeaderAttributeProvider extends AbstractCourseAttributeProvider implements CourseAttributeProvider {
+  private static final Logger LOGGER = LoggerFactory.getLogger(OracleCourseHeaderAttributeProvider.class);
   
-  public static final String SELECT_COURSE_SQL = "select * from BSPACE_COURSE_INFO_VW bsi" +
+  static final String SELECT_COURSE_SQL = "select * from BSPACE_COURSE_INFO_VW bsi" +
           "where bsi.TERM_YR = ? and bsi.TERm_CD = ? and bsi.COURSE_CNTL_NUM = ?";
-  @Reference
-  JdbcConnectionService jdbcConnectionService;
+  
+  static Map<String, String> ATTRIBUTE_TO_FIELD_MAP = ImmutableMap.of(
+    "description", "DESCRIPTION" );
+  
   
   @Override
-  public Map<String, Object> getCourseHeaderAttributes(String courseId) {
-    Map<String, Object> courseHeaderAttributes = null;;
+  public List<Map<String, Object>> getAttributes(String classId) {
+    List<Map<String, Object>> courseHeaderAttributes = null;;
     Connection connection = null;
     PreparedStatement preparedStatement = null;
     try {
-      connection = jdbcConnectionService.getConnection();
+      connection = this.jdbcConnectionService.getConnection();
       preparedStatement = connection.prepareStatement(SELECT_COURSE_SQL);
       try {
-        long term = Long.parseLong(courseId.substring(0, 3));
+        long term = Long.parseLong(classId.substring(0, 3));
         preparedStatement.setLong(1, term);
       } catch (NumberFormatException e) {
-        LOGGER.warn("coursId {} does not begin with a valid year number", courseId);;
+        LOGGER.warn("coursId {} does not begin with a valid year number", classId);;
         return null;
       }
      
-      preparedStatement.setString(2, courseId.substring(4, 5));
+      preparedStatement.setString(2, classId.substring(4, 5));
       try {
-        long ccn =  Long.valueOf(courseId.substring(5));
+        long ccn =  Long.valueOf(classId.substring(5));
         preparedStatement.setLong(3, ccn);
       } catch (NumberFormatException e) {
-        LOGGER.warn("coursId {} does not end with a valid course control number", courseId);;
+        LOGGER.warn("coursId {} does not end with a valid course control number", classId);
         return null;
       }
       
       ResultSet resultSet = preparedStatement.executeQuery();
       if (resultSet.next()) {
-        courseHeaderAttributes = getCourseHeaderAttributesFromResultSet(resultSet, courseId);
+        courseHeaderAttributes = getCourseHeaderAttributesFromResultSet(resultSet, classId);
       } else {
         courseHeaderAttributes = null;
       }
     } catch (SQLException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOGGER.warn(e.getMessage(), e);
     }
-    return null;
+    return courseHeaderAttributes;
   }
-
-  @Override
-  public List<Map<String, Object>> getInstructorAttributes(Set<String> instructorLdapIds) {
-    return null;
-  }
-
-  @Override
-  public Map<String, Object> getScheduleAttributes(String courseId) {
-    return null;
-  }
-
-  @Override
-  public List<Map<String, Object>> getSectionAttributes(Set<String> sectionCCNs) {
-    return null;
-  }
-  
 //  TERM_YR
 //  TERM_CD
 //  COURSE_CNTL_NUM
@@ -109,9 +96,16 @@ public class OracleCourseAttributeProvider implements CourseAttributeProvider {
 //  CATALOG_DESCRIPTION
 //  COURSE_OPTION
 //  DEPT_DESCRIPTION
-  private Map<String, Object> getCourseHeaderAttributesFromResultSet(ResultSet resultSet, String courseId) {
+  private List<Map<String, Object>> getCourseHeaderAttributesFromResultSet(ResultSet resultSet, String classId) throws SQLException {
+    List<Map<String, Object>> courseHeaderAttributesList = new ArrayList<Map<String,Object>>();
     Map<String, Object> courseHeaderAttributes = new HashMap<String, Object>();
-    courseHeaderAttributes.put("courseid", courseId);
-    return courseHeaderAttributes;
+    courseHeaderAttributes.put("classid", classId);
+    Set<Entry<String, String>> mapEntries = ATTRIBUTE_TO_FIELD_MAP.entrySet();
+    for (Entry<String, String> mapEntry : mapEntries) {
+      courseHeaderAttributes.put(mapEntry.getKey(), resultSet.getObject(mapEntry.getValue()));
+    }
+    courseHeaderAttributesList.add(courseHeaderAttributes);
+    return courseHeaderAttributesList;
   }
+
 }

@@ -23,15 +23,15 @@ package edu.berkeley.myberkeley.api.provision;
  * account provision request.
  */
 public class CourseInfoProvisionResult {
-  private String courseId;
+  private String classId;
   private SynchronizationState synchronizationState;
 
-  public CourseInfoProvisionResult(String courseId, SynchronizationState synchronizationState) {
-    this.courseId = courseId;
+  public CourseInfoProvisionResult(String classId, SynchronizationState synchronizationState) {
+    this.classId = classId;
     this.synchronizationState = synchronizationState;
   }
-  public String getCourseId() {
-    return this.courseId;
+  public String getClassId() {
+    return this.classId;
   }
   public SynchronizationState getSynchronizationState() {
     return synchronizationState;
