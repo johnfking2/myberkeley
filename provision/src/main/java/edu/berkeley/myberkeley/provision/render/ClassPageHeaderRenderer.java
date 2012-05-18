@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-public class CourseInfoHeaderRenderer extends AbstractCourseInfoRenderer implements CourseInfoRenderer { 
+public class ClassPageHeaderRenderer extends AbstractClassPageRenderer implements ClassPageRenderer { 
   
   static final Map<String, String> TOKENS_MAP = ImmutableMap.of(
       "classid", "%%CLASSID%%",
@@ -39,9 +39,9 @@ public class CourseInfoHeaderRenderer extends AbstractCourseInfoRenderer impleme
   "  \"description\" : %%DESCRIPTION%%," +
   "}";
   
-  private static final Logger LOGGER = LoggerFactory.getLogger(CourseInfoHeaderRenderer.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ClassPageHeaderRenderer.class);
   
-  public CourseInfoHeaderRenderer(Repository repository, String template) {
+  public ClassPageHeaderRenderer(Repository repository, String template) {
     super(repository, template);
     if (this.template == null) this.template = TEMPLATE;
   }
