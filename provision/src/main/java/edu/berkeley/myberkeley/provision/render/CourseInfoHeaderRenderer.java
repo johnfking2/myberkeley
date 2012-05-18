@@ -16,13 +16,13 @@ import java.util.Set;
 public class CourseInfoHeaderRenderer extends AbstractCourseInfoRenderer implements CourseInfoRenderer { 
   
   static final Map<String, String> TOKENS_MAP = ImmutableMap.of(
-      "courseid", "%%COURSEID%%",
+      "classid", "%%CLASSID%%",
 //      "info_last_updated", "%%LAST_UPDATE%%",
       "description", "%%DESCRIPTION%%"
   );
 
   private static final String TEMPLATE = "{" +
-  "  \"courseid\" : %%COURSEID%%" +
+  "  \"classid\" : %%CLASSID%%" +
   "  \"info_last_updated\" : %%LAST_UPDATE%%," +
   "  \"courseinfo\" : {" +
   "    \"format\" : \"3 hours of lecture per week\"," +

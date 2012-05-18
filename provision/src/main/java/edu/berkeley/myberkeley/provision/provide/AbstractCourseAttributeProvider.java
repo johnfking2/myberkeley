@@ -14,5 +14,5 @@ public abstract class AbstractCourseAttributeProvider implements CourseAttribute
   @Reference
  protected JdbcConnectionService jdbcConnectionService;
 
-  public abstract List<Map<String, Object>> getAttributes(String courseId);
+  public abstract List<Map<String, Object>> getAttributes(String classId);
 }
