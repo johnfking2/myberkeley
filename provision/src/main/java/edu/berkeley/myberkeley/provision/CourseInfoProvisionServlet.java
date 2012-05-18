@@ -2,7 +2,6 @@ package edu.berkeley.myberkeley.provision;
 
 import edu.berkeley.myberkeley.api.provision.CourseInfoProvisionResult;
 import edu.berkeley.myberkeley.api.provision.CourseInfoService;
-import edu.berkeley.myberkeley.api.provision.SynchronizationState;
 
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.sling.SlingServlet;
@@ -36,29 +35,61 @@ public class CourseInfoProvisionServlet extends SlingAllMethodsServlet {
   
   private static final Logger LOGGER = LoggerFactory.getLogger(CourseInfoProvisionServlet.class);
   
-  static final String COURSE_INFO_PARAM_NAME = "ccourseInfo";
-  static final String COURSE_IDS_PARAM_NAME = "courseIds";
-  static final String COURSE_ID_PARAM_NAME = "courseId";
+  static final String CLASS_PAGE_PARAM_NAME = "classPage";
+  static final String CLASS_IDS_PARAM_NAME = "classIds";
+  static final String CLASS_ID_PARAM_NAME = "classId";
 
   @Reference
   transient CourseInfoService courseInfoService;
 
+  @Override
+  protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response)
+      throws ServletException, IOException {
+    PrintWriter writer = response.getWriter();
+    // authorication check here
+    response.setContentType("application/json");
+    response.setCharacterEncoding("UTF-8");
+    String classId = request.getParameter(CLASS_ID_PARAM_NAME);
+    if (classId != null) {
+      JSONObject courseInfo = this.courseInfoService.getCourseInfo(classId);
+      if (courseInfo != null) {
+        try {
+          if (Arrays.asList(request.getRequestPathInfo().getSelectors()).contains("tidy")) {
+            writer.print(courseInfo.toString(2));
+          } else {
+            writer.print(courseInfo.toString());
+          }
+        } catch (JSONException e) {
+          LOGGER.warn(e.getMessage(), e);
+          response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "failed to return courseInfo due to JSONException");
+        }
+      } else {
+        writer.print("courseInfo not found for classId: " + classId);
+      }
+    } else {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing "
+          + CLASS_ID_PARAM_NAME + " parameter");
+    }
+  }
+  
   @Override
   protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
       throws ServletException, IOException {
     // do the authn check here???
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
-    String courseInfoStr = request.getParameter(COURSE_INFO_PARAM_NAME);
-    String[] courseds = request.getParameterValues(COURSE_IDS_PARAM_NAME);
+    String courseInfoStr = request.getParameter(CLASS_PAGE_PARAM_NAME);
+    String[] courseds = request.getParameterValues(CLASS_IDS_PARAM_NAME);
     if (courseInfoStr != null) {
       provisionCourseInfo(courseInfoStr, request, response);
     }
-    else if (courseds !=null) {
+    else if (courseds != null) {
       provisionCourseInfo(courseds, request, response);
     }
     else {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing " + COURSE_INFO_PARAM_NAME + " or " + COURSE_IDS_PARAM_NAME + " parameter");
+      String message = "Missing " + CLASS_PAGE_PARAM_NAME + " or " + CLASS_IDS_PARAM_NAME + " parameter";
+      LOGGER.warn(message);
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
     }
     
   }
@@ -66,56 +97,28 @@ public class CourseInfoProvisionServlet extends SlingAllMethodsServlet {
   private void provisionCourseInfo(String courseInfoStr, SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {
     CourseInfoProvisionResult result = null;
     try {
+      LOGGER.debug("provisioning:\n", courseInfoStr);
       JSONObject courseInfo = new JSONObject(courseInfoStr);
-      result = this.courseInfoService.saveCourseInfo(courseInfo);
+      result = this.courseInfoService.provisionCourseInfo(courseInfo);
       ExtendedJSONWriter jsonWriter = new ExtendedJSONWriter(response.getWriter());
       jsonWriter.setTidy(Arrays.asList(request.getRequestPathInfo().getSelectors()).contains("tidy"));
       jsonWriter.object();
       jsonWriter.key("synchronizationState");
       jsonWriter.value(result.getSynchronizationState().toString());
-      jsonWriter.key("courseId");
-      jsonWriter.value(result.getCourseId());
+      jsonWriter.key(CLASS_ID_PARAM_NAME);
+      jsonWriter.value(result.getClassId());
       jsonWriter.endObject();
     } catch (JSONException e) {
       LOGGER.warn(e.getMessage(), e);
-      result = new CourseInfoProvisionResult(null, SynchronizationState.error);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to provision: " + courseInfoStr + " due to JSON Parsing error");
     }
     
   }
 
-  private void provisionCourseInfo(String[] courseIds, SlingHttpServletRequest request,SlingHttpServletResponse response) throws IOException {
-    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,"provisionCourseInfo() not implemented yet");
+  private void provisionCourseInfo(String[] classIds, SlingHttpServletRequest request,SlingHttpServletResponse response) throws IOException {
+    CourseInfoProvisionResult result = null;
+    for (int i = 0; i < classIds.length; i++) {
+      result = this.courseInfoService.provisionCourseInfo(classIds[i]);
+    }
   }
-
-  @Override
-  protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response)
-      throws ServletException, IOException {
-    // authorication check here
-    response.setContentType("application/json");
-    response.setCharacterEncoding("UTF-8");
-    String courseId = request.getParameter(COURSE_ID_PARAM_NAME);
-    if (courseId != null) {
-      JSONObject courseInfo = this.courseInfoService.getCourseInfo(courseId);
-      if (courseInfo != null) {
-        PrintWriter writer = response.getWriter();
-        if ( Arrays.asList(request.getRequestPathInfo().getSelectors()).contains("tidy") ) {
-          writer.print(courseInfo.toString(2));
-        }
-        else{
-          writer.print(courseInfo.toString());        
-        }
-      }
-      else {
-        // handle error
-      }
-    }
-    else {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing " + COURSE_ID_PARAM_NAME +" parameter");
-    }
-    }
-    
-  }
-  
-  
 }

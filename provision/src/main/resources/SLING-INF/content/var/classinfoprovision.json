@@ -1,5 +1,5 @@
 {
-  "courseid" : "83438432",
+  "classid" : "83438432",
   "info_last_updated" : "Mar 29, 2012",
   "courseinfo" : {
     "format" : "3 hours of lecture per week",
@@ -73,11 +73,13 @@
       "section" : "Lecture 001",
       "time" : "TR 9:30-11 AM",
       "waitlist" : 11,
-      "midterm_datetime" : "Monday, June 3 from 1:00 - 3:00",      
+      "midterm_datetime" : "Monday, June 3 from 1:00 - 3:00",
       "midterm_location" : "12 Doe",
+      "midterm_coords" : "37.869880000000002,-122.2552",
       "midterm_note" : "Please bring a No. 6 pencil and leave your books at home.",
-      "final_datetime" : "Thursday, May 10 from 3:00 - 5:00",      
+      "final_datetime" : "Thursday, May 10 from 3:00 - 5:00",
       "final_location" : "160 Krober",
+      "final_coords" : "37.869880000000002,-122.2552",
       "final_note" : "Please bring a No. 2 pencil and leave your books at home.",
       "restrictions" : "<p>Restricted to graduate students</p><p>Seats have been reserved for:</p><ul><li>Instructor approval: A class entry code is required to enroll in these seats. <strong>(Open)</strong></li><li>Students with a major or Molecular and Cell Biology or Neuroscience or Biophysics <strong>(Open)</strong></li><li>Open seating <strong>(Open)</strong></li></ul>",
       "instructors" : [
@@ -94,11 +96,13 @@
       "section" : "Discussion 101",
       "time" : "W 11 AM - 11 PM",
       "waitlist" : 0,
-      "midterm_datetime" : "Friday, October 19 from 1:00 - 3:00",      
+      "midterm_datetime" : "Friday, October 19 from 1:00 - 3:00",
       "midterm_location" : "12 Doe",
+      "midterm_coords" : "37.869880000000002,-122.2552",
       "midterm_note" : "Please bring a No. 7 pencil and leave your books at home.",
-      "final_datetime" : "Wednesday, April 13 from 2:00 - 3:00",      
+      "final_datetime" : "Wednesday, April 13 from 2:00 - 3:00",
       "final_location" : "117 Dwinnelle",
+      "final_coords" : "37.869880000000002,-122.2552",
       "final_note" : "Please bring a No. 3 pencil and leave your books at home.",
       "restrictions" : "<p>Restricted to graduate students</p><p>Seats have been reserved for:</p><ul><li>Instructor approval: A class entry code is required to enroll in these seats. <strong>(Open)</strong></li><li>Students with a major or Molecular and Cell Biology or Neuroscience or Biophysics <strong>(Open)</strong></li><li>Open seating <strong>(Open)</strong></li></ul>",
       "instructors" : false
@@ -106,18 +110,20 @@
     {
       "ccn" : 62332,
       "enrolled_cur" : false,
-      "enrolled_max" : false,      
+      "enrolled_max" : false,
       "location" : "385 LeConte",
       "coords" : "37.872489999999999,-122.25748",
       "note" : "Bring your pencils - you're going to need them.",
       "section" : false,
       "time" : false,
       "waitlist" : 0,
-      "midterm_datetime" : "Monday, September 12 from 3:00 - 4:30",      
+      "midterm_datetime" : "Monday, September 12 from 3:00 - 4:30",
       "midterm_location" : "43 Building B",
+      "midterm_coords" : "37.869880000000002,-122.2552",
       "midterm_note" : "Please bring a No. 8 pencil and leave your books at home.",
       "final_datetime" : false,
       "final_location" : false,
+      "final_coords" : false,
       "final_note" : "Please bring a No. 4 pencil and leave your books at home.",
       "restrictions" : false,
       "instructors" : [
@@ -125,7 +131,7 @@
         {"id" : false, "name" : "Jonas, Q."},
         {"id" : 93845, "name" : "Lancaster, B."},
         {"id" : 834, "name" : "Hacker, S."}
-      ]      
+      ]
     },
     {
       "ccn" : 93324,
@@ -140,14 +146,16 @@
       "waitlist" : false,
       "midterm_datetime" : false,
       "midterm_location" : false,
+      "midterm_coords" : false,
       "midterm_note" : false,
-      "final_datetime" : "Monday, March 23 from 2:00 - 3:00",      
+      "final_datetime" : "Monday, March 23 from 2:00 - 3:00",
       "final_location" : "121 North Gate",
+      "final_coords" : "37.869880000000002,-122.2552",
       "final_note" : false,
       "restrictions" : "<p>Restricted to graduate students</p><p>Seats have been reserved for:</p><ul><li>Instructor approval: A class entry code is required to enroll in these seats. <strong>(Open)</strong></li><li>Students with a major or Molecular and Cell Biology or Neuroscience or Biophysics <strong>(Open)</strong></li><li>Open seating <strong>(Open)</strong></li></ul>",
       "instructors" : [
         {"id" : 323432, "name" : "Cochran, E."}
-      ]      
+      ]
     }
   ]
 }
