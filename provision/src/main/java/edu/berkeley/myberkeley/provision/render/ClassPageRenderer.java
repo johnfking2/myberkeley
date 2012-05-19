@@ -6,5 +6,5 @@ import org.apache.sling.commons.json.JSONObject;
 import java.util.Map;
 
 public interface ClassPageRenderer {
-  JSONObject render(Map<String, Object> attributes) throws JSONException;
+  JSONObject render(Map<String, Object> attributeMap) throws JSONException;
 }
