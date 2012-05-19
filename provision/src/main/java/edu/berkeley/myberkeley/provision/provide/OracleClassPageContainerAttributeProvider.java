@@ -2,11 +2,6 @@ package edu.berkeley.myberkeley.provision.provide;
 
 import com.google.common.collect.ImmutableMap;
 
-import edu.berkeley.myberkeley.api.provision.JdbcConnectionService;
-
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,13 +13,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
-@Component(label = "CalCentral :: Oracle Class Attribute Provider", description = "Provide CalCentral class page attributes from Oracle connection")
-@Service
-public class OracleClassPageHeaderAttributeProvider extends AbstractClassAttributeProvider implements ClassAttributeProvider {
-  private static final Logger LOGGER = LoggerFactory.getLogger(OracleClassPageHeaderAttributeProvider.class);
+public class OracleClassPageContainerAttributeProvider extends AbstractClassAttributeProvider implements ClassAttributeProvider {
+  private static final Logger LOGGER = LoggerFactory.getLogger(OracleClassPageContainerAttributeProvider.class);
   
   static final String SELECT_CLASS_SQL = "select * from BSPACE_COURSE_INFO_VW bsi" +
           "where bsi.TERM_YR = ? and bsi.TERm_CD = ? and bsi.COURSE_CNTL_NUM = ?";
@@ -32,14 +25,17 @@ public class OracleClassPageHeaderAttributeProvider extends AbstractClassAttribu
   static Map<String, String> ATTRIBUTE_TO_FIELD_MAP = ImmutableMap.of(
     "description", "DESCRIPTION" );
   
+  protected OracleClassPageContainerAttributeProvider() {};
+  
+  public OracleClassPageContainerAttributeProvider(Connection connection) {
+    super(connection);
+  }
   
   @Override
   public List<Map<String, Object>> getAttributes(String classId) {
     List<Map<String, Object>> classPageHeaderAttributes = null;;
-    Connection connection = null;
     PreparedStatement preparedStatement = null;
     try {
-      connection = this.jdbcConnectionService.getConnection();
       preparedStatement = connection.prepareStatement(SELECT_CLASS_SQL);
       try {
         long term = Long.parseLong(classId.substring(0, 3));
@@ -66,6 +62,14 @@ public class OracleClassPageHeaderAttributeProvider extends AbstractClassAttribu
       }
     } catch (SQLException e) {
       LOGGER.warn(e.getMessage(), e);
+    } finally {
+      if (preparedStatement != null) {
+        try {
+          preparedStatement.close();
+        } catch (SQLException e) {
+          LOGGER.warn(e.getMessage(), e);
+        }
+      }
     }
     return classPageHeaderAttributes;
   }

@@ -13,7 +13,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-public class ClassPageHeaderRenderer extends AbstractClassPageRenderer implements ClassPageRenderer { 
+public class ClassPageContainerRenderer extends AbstractClassPageRenderer implements ClassPageRenderer { 
+  
+  private static final Logger LOGGER = LoggerFactory.getLogger(ClassPageContainerRenderer.class);
   
   static final Map<String, String> TOKENS_MAP = ImmutableMap.of(
       "classid", "%%CLASSID%%",
@@ -21,27 +23,18 @@ public class ClassPageHeaderRenderer extends AbstractClassPageRenderer implement
       "description", "%%DESCRIPTION%%"
   );
 
-  private static final String TEMPLATE = "{" +
-  "  \"classid\" : %%CLASSID%%" +
-  "  \"info_last_updated\" : %%LAST_UPDATE%%," +
-  "  \"courseinfo\" : {" +
-  "    \"format\" : \"3 hours of lecture per week\"," +
-  "    \"grading\" : \"Must be taken on a satisfactory / unsatisfactory basis\"," +
-  "    \"prereqs\" : \"1 or equivalent\"," +
-  "    \"requirements\" : \"American Cultures\"," +
-  "    \"term\" : \"Spring\"," +
-  "    \"semesters_offered\" : \"Spring, Fall\"," +
-  "    \"year\" : 2012," +
-  "    \"department\" : %%DEPARTMENT%%," +
-  "    \"coursenum\" : \"21AC\"," +
-  "    \"units\" : 5" +
-  "  }," +
-  "  \"description\" : %%DESCRIPTION%%," +
+  private static final String TEMPLATE = "{" + 
+  "  'classid' : %%CLASSID%%," + 
+  "  'info_last_updated' : 'Mar 29, 2012'," + 
+  "  'courseinfo' : {}," + 
+  "  'description' : %%DESCRIPTION%%," + 
+  "  'instructors' : []," + 
+  "  'schedule' : {}," + 
+  "  'sections' : []" + 
   "}";
   
-  private static final Logger LOGGER = LoggerFactory.getLogger(ClassPageHeaderRenderer.class);
   
-  public ClassPageHeaderRenderer(Repository repository, String template) {
+  public ClassPageContainerRenderer(Repository repository, String template) {
     super(repository, template);
     if (this.template == null) this.template = TEMPLATE;
   }
