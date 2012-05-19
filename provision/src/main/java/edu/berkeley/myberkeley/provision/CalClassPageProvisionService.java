@@ -1,21 +1,16 @@
 package edu.berkeley.myberkeley.provision;
 
+import edu.berkeley.myberkeley.api.provision.ClassPageBuilder;
+import edu.berkeley.myberkeley.api.provision.ClassPageBuilder.Section;
 import edu.berkeley.myberkeley.api.provision.ClassPageProvisionResult;
 import edu.berkeley.myberkeley.api.provision.ClassPageProvisionService;
 import edu.berkeley.myberkeley.api.provision.SynchronizationState;
-import edu.berkeley.myberkeley.provision.provide.ClassAttributeProvider;
-import edu.berkeley.myberkeley.provision.provide.OracleClassPageHeaderAttributeProvider;
-import edu.berkeley.myberkeley.provision.render.ClassPageHeaderRenderer;
-import edu.berkeley.myberkeley.provision.render.ClassPageRenderer;
 
-import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Modified;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.commons.json.JSONException;
 import org.apache.sling.commons.json.JSONObject;
-import org.osgi.service.component.ComponentContext;
 import org.sakaiproject.nakamura.api.lite.ClientPoolException;
 import org.sakaiproject.nakamura.api.lite.Repository;
 import org.sakaiproject.nakamura.api.lite.Session;
@@ -26,9 +21,7 @@ import org.sakaiproject.nakamura.api.lite.content.ContentManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component(metatype = true,
@@ -42,14 +35,8 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
   
   private static final Logger LOGGER = LoggerFactory.getLogger(CalClassPageProvisionService.class);
   
-  private Map<Component, ClassAttributeProvider> attributeProviders;
-  
-  private Map<Component, ClassPageRenderer> renderers;
-  
-  
-  private enum Component {
-    classPageHeader
-  }
+  @Reference
+  ClassPageBuilder builder;
   
   @Reference
   Repository repository;
@@ -154,7 +141,7 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
       if (classPageContent == null) {
         classPageContentMap = new HashMap<String, Object>(2);
         classPageContentMap.put("sling:resourceType", STORE_RESOURCETYPE);
-        JSONObject classPageJSON = buildJSON(classId);
+        JSONObject classPageJSON = buildClassPage(classId);
         classPageContentMap.put(CLASS_PAGE_PROP_NAME, classPageJSON.toString());
       }
     } catch (ClientPoolException e) {
@@ -175,33 +162,13 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
     
     return result;
   }
-  
-  private JSONObject buildJSON(String classId) {
-    JSONObject classPageJSON = null;
-    ClassAttributeProvider headerProvider = this.attributeProviders.get(Component.classPageHeader);
-    List<Map<String, Object>> headerAttriubesList = headerProvider.getAttributes(classId);
-    ClassPageRenderer headerRenderer = this.renderers.get(Component.classPageHeader);
-    try {
-      JSONObject headerJSON = headerRenderer.render(headerAttriubesList.get(0));
-      LOGGER.debug("courseInfoHeader:" + headerJSON.toString());
-    } catch (JSONException e) {
-      LOGGER.warn(e.getMessage(), e);
-    }
-    return classPageJSON;
-  }
 
-  @Activate @Modified
-  protected void activate(ComponentContext componentContext) {
-    // wire up later to allow pipeline configurataion and template passing??
-    Dictionary<?, ?> props = componentContext.getProperties();
-    
-    // cab't get an ImmutableMap to handle types so using plain HashMaqp    
-    this.attributeProviders = new HashMap<CalClassPageProvisionService.Component, ClassAttributeProvider>();
-    this.attributeProviders.put(Component.classPageHeader, new OracleClassPageHeaderAttributeProvider());
-
-    this.renderers = new HashMap<Component, ClassPageRenderer>();
-    this.renderers.put(Component.classPageHeader, new ClassPageHeaderRenderer(repository, null));
-      
+  private JSONObject buildClassPage(String classId) {
+    JSONObject classPage = null;
+    this.builder.begin(classId).
+                 insert(Section.courseinfo);
+    classPage = this.builder.end();            
+    return classPage;
   }
 
 }

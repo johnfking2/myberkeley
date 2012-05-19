@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
  * A GET request will return the provision JSON structure for the course.
  * A POST request will create or update the course.
  */
-@SlingServlet(methods = { "GET", "POST" }, paths = {"/system/myberkeley/courseInfo"},
+@SlingServlet(methods = { "GET", "POST" }, paths = {"/system/myberkeley/classpages"},
     generateService = true, generateComponent = true)
 
 public class ClassPageProvisionServlet extends SlingAllMethodsServlet {
@@ -79,13 +79,13 @@ public class ClassPageProvisionServlet extends SlingAllMethodsServlet {
     // do the authn check here???
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
-    String courseInfoStr = request.getParameter(CLASS_PAGE_PARAM_NAME);
-    String[] courseds = request.getParameterValues(CLASS_IDS_PARAM_NAME);
-    if (courseInfoStr != null) {
-      provisionClassPage(courseInfoStr, request, response);
+    String classPageStr = request.getParameter(CLASS_PAGE_PARAM_NAME);
+    String[] classIds = request.getParameterValues(CLASS_IDS_PARAM_NAME);
+    if (classPageStr != null) {
+      provisionClassPage(classPageStr, request, response);
     }
-    else if (courseds != null) {
-      provisionCourseInfo(courseds, request, response);
+    else if (classIds != null) {
+      provisionClassPages(classIds, request, response);
     }
     else {
       String message = "Missing " + CLASS_PAGE_PARAM_NAME + " or " + CLASS_IDS_PARAM_NAME + " parameter";
@@ -116,7 +116,7 @@ public class ClassPageProvisionServlet extends SlingAllMethodsServlet {
     
   }
 
-  private void provisionCourseInfo(String[] classIds, SlingHttpServletRequest request,SlingHttpServletResponse response) throws IOException {
+  private void provisionClassPages(String[] classIds, SlingHttpServletRequest request,SlingHttpServletResponse response) throws IOException {
     ClassPageProvisionResult result = null;
     for (int i = 0; i < classIds.length; i++) {
       result = this.classPageProvisionService.provisionClassPage(classIds[i]);
