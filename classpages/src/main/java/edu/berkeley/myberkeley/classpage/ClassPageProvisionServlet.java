@@ -1,11 +1,11 @@
-package edu.berkeley.myberkeley.provision;
+package edu.berkeley.myberkeley.classpage;
 
-import static edu.berkeley.myberkeley.api.provision.ClassPageProvisionService.CLASS_IDS_PARAM_NAME;
-import static edu.berkeley.myberkeley.api.provision.ClassPageProvisionService.CLASS_ID_PARAM_NAME;
-import static edu.berkeley.myberkeley.api.provision.ClassPageProvisionService.CLASS_PAGE_PARAM_NAME;
+import static edu.berkeley.myberkeley.api.classpage.ClassPageProvisionService.CLASS_IDS_PARAM_NAME;
+import static edu.berkeley.myberkeley.api.classpage.ClassPageProvisionService.CLASS_ID_PARAM_NAME;
+import static edu.berkeley.myberkeley.api.classpage.ClassPageProvisionService.CLASS_PAGE_PARAM_NAME;
 
-import edu.berkeley.myberkeley.api.provision.ClassPageProvisionResult;
-import edu.berkeley.myberkeley.api.provision.ClassPageProvisionService;
+import edu.berkeley.myberkeley.api.classpage.ClassPageProvisionResult;
+import edu.berkeley.myberkeley.api.classpage.ClassPageProvisionService;
 
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.sling.SlingServlet;

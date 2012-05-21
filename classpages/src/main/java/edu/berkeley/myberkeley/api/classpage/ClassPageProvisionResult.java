@@ -15,8 +15,9 @@
  * KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package edu.berkeley.myberkeley.api.provision;
+package edu.berkeley.myberkeley.api.classpage;
 
+import edu.berkeley.myberkeley.api.provision.SynchronizationState;
 
 /**
  * Give callers enough information to display or log the results of an

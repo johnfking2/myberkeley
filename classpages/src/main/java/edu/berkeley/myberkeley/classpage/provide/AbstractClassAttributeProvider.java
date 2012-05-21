@@ -1,4 +1,4 @@
-package edu.berkeley.myberkeley.provision.provide;
+package edu.berkeley.myberkeley.classpage.provide;
 
 import java.sql.Connection;
 import java.util.List;
