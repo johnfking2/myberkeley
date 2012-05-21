@@ -4,13 +4,24 @@ import edu.berkeley.myberkeley.api.provision.ClassPageBuilder;
 import edu.berkeley.myberkeley.api.provision.ClassPageBuilder.Section;
 import edu.berkeley.myberkeley.api.provision.ClassPageProvisionResult;
 import edu.berkeley.myberkeley.api.provision.ClassPageProvisionService;
+import edu.berkeley.myberkeley.api.provision.JdbcConnectionService;
 import edu.berkeley.myberkeley.api.provision.SynchronizationState;
+import edu.berkeley.myberkeley.provision.provide.ClassAttributeProvider;
+import edu.berkeley.myberkeley.provision.provide.OracleClassPageContainerAttributeProvider;
+import edu.berkeley.myberkeley.provision.render.ClassPageContainerRenderer;
+import edu.berkeley.myberkeley.provision.render.ClassPageCourseInfoRenderer;
+import edu.berkeley.myberkeley.provision.render.ClassPageRenderer;
 
+import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Deactivate;
+import org.apache.felix.scr.annotations.Modified;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.commons.json.JSONException;
 import org.apache.sling.commons.json.JSONObject;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.ComponentException;
 import org.sakaiproject.nakamura.api.lite.ClientPoolException;
 import org.sakaiproject.nakamura.api.lite.Repository;
 import org.sakaiproject.nakamura.api.lite.Session;
@@ -21,6 +32,9 @@ import org.sakaiproject.nakamura.api.lite.content.ContentManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,11 +49,17 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
   
   private static final Logger LOGGER = LoggerFactory.getLogger(CalClassPageProvisionService.class);
   
-  @Reference
-  ClassPageBuilder builder;
+  private Map<Section, ClassAttributeProvider> attributeProviders;
+  
+  private Map<Section, ClassPageRenderer> renderers;
   
   @Reference
   Repository repository;
+  
+  @Reference
+  JdbcConnectionService jdbcConnectionService;
+  
+  Connection dbConnection;
   
   @Override
   public JSONObject getClassPage(String classId) {
@@ -165,10 +185,48 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
 
   private JSONObject buildClassPage(String classId) {
     JSONObject classPage = null;
-    this.builder.begin(classId).
-                 insert(Section.courseinfo);
-    classPage = this.builder.end();            
+    ClassPageBuilder builder = new CalClassPageBuilder(this.attributeProviders, this.renderers);
+    JSONObject classPag = builder.begin(classId)
+            .insert(Section.courseinfo)
+            .end();
     return classPage;
   }
 
+  @Activate @Modified
+  protected void activate(ComponentContext componentContext) {
+    // wire up later to allow pipeline configurataion and template passing??
+
+    Dictionary<?, ?> props = componentContext.getProperties();
+    
+    try {
+      this.dbConnection = this.jdbcConnectionService.getConnection();
+    } catch (SQLException e) {
+      LOGGER.warn(e.getMessage(), e);
+      deactivate(componentContext);
+    }
+    // cab't get an ImmutableMap to handle types so using plain HashMaqp    
+    this.attributeProviders = new HashMap<Section, ClassAttributeProvider>();
+    this.attributeProviders.put(Section.container, new OracleClassPageContainerAttributeProvider(this.dbConnection));
+
+    this.renderers = new HashMap<Section, ClassPageRenderer>();
+    this.renderers.put(Section.container, new ClassPageContainerRenderer(repository, null));
+    this.renderers.put(Section.courseinfo, new ClassPageCourseInfoRenderer(repository, null));
+      
+  }
+  
+  @SuppressWarnings("deprecation")
+  @Deactivate
+  protected void deactivate(ComponentContext componentContext) {
+    if (this.dbConnection != null) {
+      try {
+        this.dbConnection.close();
+      } catch (SQLException e) {
+        LOGGER.info("Exception while closing dbConnection", e);
+        throw new ComponentException("Could not close connection");
+      } finally {
+        this.dbConnection = null; 
+        this.jdbcConnectionService = null;
+      }
+    }
+  }
 }
