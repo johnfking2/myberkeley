@@ -1,4 +1,4 @@
-package edu.berkeley.myberkeley.provision.render;
+package edu.berkeley.myberkeley.classpage.render;
 
 
 import org.sakaiproject.nakamura.api.lite.Repository;

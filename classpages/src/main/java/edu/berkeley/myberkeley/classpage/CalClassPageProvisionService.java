@@ -1,15 +1,14 @@
-package edu.berkeley.myberkeley.provision;
+package edu.berkeley.myberkeley.classpage;
 
-import edu.berkeley.myberkeley.api.provision.ClassPageProvisionResult;
-import edu.berkeley.myberkeley.api.provision.ClassPageProvisionService;
+import edu.berkeley.myberkeley.api.classpage.ClassPageProvisionResult;
+import edu.berkeley.myberkeley.api.classpage.ClassPageProvisionService;
 import edu.berkeley.myberkeley.api.provision.JdbcConnectionService;
 import edu.berkeley.myberkeley.api.provision.SynchronizationState;
-import edu.berkeley.myberkeley.provision.CalClassPageBuilderOuter.Section;
-import edu.berkeley.myberkeley.provision.provide.ClassAttributeProvider;
-import edu.berkeley.myberkeley.provision.provide.OracleClassPageContainerAttributeProvider;
-import edu.berkeley.myberkeley.provision.render.ClassPageContainerRenderer;
-import edu.berkeley.myberkeley.provision.render.ClassPageCourseInfoRenderer;
-import edu.berkeley.myberkeley.provision.render.ClassPageRenderer;
+import edu.berkeley.myberkeley.classpage.provide.ClassAttributeProvider;
+import edu.berkeley.myberkeley.classpage.provide.OracleClassPageContainerAttributeProvider;
+import edu.berkeley.myberkeley.classpage.render.ClassPageContainerRenderer;
+import edu.berkeley.myberkeley.classpage.render.ClassPageCourseInfoRenderer;
+import edu.berkeley.myberkeley.classpage.render.ClassPageRenderer;
 
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
