@@ -15,7 +15,8 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 
-public class CalClassPageBuilder {
+
+public class CalClassPageBuilderOuter {
   
   public enum Section {
     container,
@@ -24,7 +25,7 @@ public class CalClassPageBuilder {
     schedule,
     sections
   }
-  private static final Logger LOGGER = LoggerFactory.getLogger(CalClassPageBuilder.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(CalClassPageBuilderOuter.class);
   
   private String classId;
   
@@ -37,14 +38,14 @@ public class CalClassPageBuilder {
   @Reference
   Repository repository;
   
-  private CalClassPageBuilder() {}
+  private CalClassPageBuilderOuter() {}
   
-  public CalClassPageBuilder(Map<Section, ClassAttributeProvider> attributeProviders, Map<Section, ClassPageRenderer> renderers) {
+  public CalClassPageBuilderOuter(Map<Section, ClassAttributeProvider> attributeProviders, Map<Section, ClassPageRenderer> renderers) {
     this.attributeProviders = attributeProviders;
     this.renderers = renderers;
   }
   
-  public CalClassPageBuilder begin(String classId) {
+  public CalClassPageBuilderOuter begin(String classId) {
     this.classId = classId;
     ClassAttributeProvider attributeProvider = this.attributeProviders.get(Section.container);
     ClassPageRenderer renderer = this.renderers.get(Section.container);
@@ -59,7 +60,7 @@ public class CalClassPageBuilder {
     return this;
   }
 
-  public CalClassPageBuilder insert(Section section) {
+  public CalClassPageBuilderOuter insert(Section section) {
     JSONObject renderedSection = null;
     ClassAttributeProvider attributeProvider = this.attributeProviders.get(section);
     ClassPageRenderer renderer = this.renderers.get(section);
