@@ -1,4 +1,4 @@
-package edu.berkeley.myberkeley.provision.provide;
+package edu.berkeley.myberkeley.classpage.provide;
 
 import java.util.List;
 import java.util.Map;

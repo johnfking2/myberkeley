@@ -1,4 +1,5 @@
-package edu.berkeley.myberkeley.api.provision;
+package edu.berkeley.myberkeley.api.classpage;
+
 
 import org.apache.sling.commons.json.JSONObject;
 
