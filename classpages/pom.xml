@@ -17,8 +17,8 @@
         <configuration>
           <instructions>
             <Bundle-Category>myberkeley</Bundle-Category>
-            <Export-Package>edu.berkeley.myberkeley.api.classpages.*</Export-Package>
-            <Private-Package>edu.berkeley.myberkeley.classpages.*</Private-Package>
+            <Export-Package>edu.berkeley.myberkeley.api.classpage.*</Export-Package>
+            <Private-Package>edu.berkeley.myberkeley.classpage.*</Private-Package>
             <Sling-Initial-Content>
               SLING-INF/content;overwriteProperties:=true;uninstall:=false
             </Sling-Initial-Content>
@@ -50,6 +50,10 @@
     <dependency>
 	    <groupId>org.sakaiproject.nakamura</groupId>
 	    <artifactId>org.sakaiproject.nakamura.core</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.sakaiproject.nakamura</groupId>
+        <artifactId>org.sakaiproject.nakamura.doc</artifactId>
     </dependency>
     <dependency>
         <groupId>org.sakaiproject.nakamura</groupId>

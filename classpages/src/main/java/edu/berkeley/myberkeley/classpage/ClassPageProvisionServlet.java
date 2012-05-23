@@ -1,8 +1,6 @@
 package edu.berkeley.myberkeley.classpage;
 
-import static edu.berkeley.myberkeley.api.classpage.ClassPageProvisionService.CLASS_IDS_PARAM_NAME;
-import static edu.berkeley.myberkeley.api.classpage.ClassPageProvisionService.CLASS_ID_PARAM_NAME;
-import static edu.berkeley.myberkeley.api.classpage.ClassPageProvisionService.CLASS_PAGE_PARAM_NAME;
+import com.google.common.collect.Sets;
 
 import edu.berkeley.myberkeley.api.classpage.ClassPageProvisionResult;
 import edu.berkeley.myberkeley.api.classpage.ClassPageProvisionService;
@@ -21,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
@@ -42,6 +41,14 @@ public class ClassPageProvisionServlet extends SlingAllMethodsServlet {
 
   @Reference
   transient ClassPageProvisionService classPageProvisionService;
+  
+  
+  public static enum PARAMS {
+    classPage,
+    classids,
+    classid,
+    courseTitle
+  };
 
   @Override
   protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response)
@@ -50,7 +57,7 @@ public class ClassPageProvisionServlet extends SlingAllMethodsServlet {
     // authorication check here
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
-    String classId = request.getParameter(CLASS_ID_PARAM_NAME);
+    String classId = request.getParameter(PARAMS.classid.name());
     if (classId != null) {
       JSONObject courseInfo = this.classPageProvisionService.getClassPage(classId);
       if (courseInfo != null) {
@@ -69,7 +76,7 @@ public class ClassPageProvisionServlet extends SlingAllMethodsServlet {
       }
     } else {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing "
-          + CLASS_ID_PARAM_NAME + " parameter");
+          + PARAMS.classid.name() + " parameter");
     }
   }
   
@@ -79,8 +86,8 @@ public class ClassPageProvisionServlet extends SlingAllMethodsServlet {
     // do the authn check here???
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
-    String classPageStr = request.getParameter(CLASS_PAGE_PARAM_NAME);
-    String[] classIds = request.getParameterValues(CLASS_IDS_PARAM_NAME);
+    String classPageStr = request.getParameter(PARAMS.classPage.name());
+    String[] classIds = request.getParameterValues(PARAMS.classids.name());
     if (classPageStr != null) {
       provisionClassPage(classPageStr, request, response);
     }
@@ -88,38 +95,62 @@ public class ClassPageProvisionServlet extends SlingAllMethodsServlet {
       provisionClassPages(classIds, request, response);
     }
     else {
-      String message = "Missing " + CLASS_PAGE_PARAM_NAME + " or " + CLASS_IDS_PARAM_NAME + " parameter";
+      String message = "Missing " + PARAMS.classPage.name() + " or " + PARAMS.classids.name() + " parameter";
       LOGGER.warn(message);
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
     }
     
   }
 
-  private void provisionClassPage(String courseInfoStr, SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {
+  private void provisionClassPage(String classPageStr, SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {
     ClassPageProvisionResult result = null;
     try {
-      LOGGER.debug("provisioning:\n", courseInfoStr);
-      JSONObject courseInfo = new JSONObject(courseInfoStr);
-      result = this.classPageProvisionService.provisionClassPage(courseInfo);
+      LOGGER.debug("provisioning:\n", classPageStr);
+      JSONObject classPage = new JSONObject(classPageStr);
+      result = this.classPageProvisionService.provisionClassPage(classPage);
       ExtendedJSONWriter jsonWriter = new ExtendedJSONWriter(response.getWriter());
       jsonWriter.setTidy(Arrays.asList(request.getRequestPathInfo().getSelectors()).contains("tidy"));
       jsonWriter.object();
       jsonWriter.key("synchronizationState");
       jsonWriter.value(result.getSynchronizationState().toString());
-      jsonWriter.key(CLASS_ID_PARAM_NAME);
+      jsonWriter.key(PARAMS.classid.name());
       jsonWriter.value(result.getClassId());
       jsonWriter.endObject();
     } catch (JSONException e) {
       LOGGER.warn(e.getMessage(), e);
-      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to provision: " + courseInfoStr + " due to JSON Parsing error");
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to provision: " + classPageStr + " due to JSON Parsing error");
     }
-    
   }
 
   private void provisionClassPages(String[] classIds, SlingHttpServletRequest request,SlingHttpServletResponse response) throws IOException {
-    ClassPageProvisionResult result = null;
+    Set<ClassPageProvisionResult> results = Sets.newHashSet();
+    ClassPageProvisionResult provisionResult = null;
     for (int i = 0; i < classIds.length; i++) {
-      result = this.classPageProvisionService.provisionClassPage(classIds[i]);
+      LOGGER.info("Provisioning classId" + classIds[i]);
+      provisionResult = this.classPageProvisionService.provisionClassPage(classIds[i]);
+      results.add(provisionResult);
     }
+    try {
+      ExtendedJSONWriter jsonWriter = new ExtendedJSONWriter(response.getWriter());
+      jsonWriter.setTidy(Arrays.asList(request.getRequestPathInfo().getSelectors()).contains("tidy"));
+      jsonWriter.object();
+      jsonWriter.key("results");
+      jsonWriter.array();
+      for (ClassPageProvisionResult result : results) {
+        jsonWriter.object();
+        jsonWriter.key(PARAMS.classid.name());
+        jsonWriter.value(result.getClassId());
+        jsonWriter.key(PARAMS.courseTitle.name());
+        jsonWriter.value(result.getCourseTitle());
+        jsonWriter.key("synchronizationState");
+        jsonWriter.value(result.getSynchronizationState().toString());
+        jsonWriter.endObject();
+      }
+      jsonWriter.endArray();
+      jsonWriter.endObject();
+    } catch (JSONException e) {
+      LOGGER.error(e.getMessage(), e);
+    }   
   }
+
 }

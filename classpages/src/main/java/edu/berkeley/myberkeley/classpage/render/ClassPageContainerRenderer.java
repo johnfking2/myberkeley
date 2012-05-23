@@ -17,20 +17,30 @@ public class ClassPageContainerRenderer extends AbstractClassPageRenderer implem
   
   private static final Logger LOGGER = LoggerFactory.getLogger(ClassPageContainerRenderer.class);
   
-  static final Map<String, String> TOKENS_MAP = ImmutableMap.of(
+  protected static final Map<String, String> TOKENS_MAP = ImmutableMap.of(
       "classid", "%%CLASSID%%",
 //      "info_last_updated", "%%LAST_UPDATE%%",
       "description", "%%DESCRIPTION%%"
   );
 
-  private static final String TEMPLATE = "{" + 
+  protected static final String TEMPLATE1 = "{" + 
   "  'classid' : %%CLASSID%%," + 
-  "  'info_last_updated' : 'Mar 29, 2012'," + 
+  "  'info_last_updated' : %%INFO_LAST_UPDATED%%," + 
   "  'courseinfo' : {}," + 
   "  'description' : %%DESCRIPTION%%," + 
   "  'instructors' : []," + 
   "  'schedule' : {}," + 
   "  'sections' : []" + 
+  "}";
+  
+  protected static final String TEMPLATE = "{" + 
+  "  \"classid\" : %%CLASSID%%," + 
+  "  \"info_last_updated\" : %%INFO_LAST_UPDATED%%," + 
+  "  \"courseinfo\" : {}," + 
+  "  \"description\" : %%DESCRIPTION%%," + 
+  "  \"instructors\" : []," + 
+  "  \"schedule\" : {}," + 
+  "  \"sections\" : []" + 
   "}";
   
   
@@ -41,19 +51,7 @@ public class ClassPageContainerRenderer extends AbstractClassPageRenderer implem
 
   @Override
   public JSONObject render(Map<String, Object> attributes) throws JSONException {
-    JSONObject renderedJSON = null;
-    String workingTemplate = new String(this.template);
-    Set<Entry<String, String>> tokenEntries = TOKENS_MAP.entrySet();
-    for (Entry<String, String> tokenEntry : tokenEntries) {
-      String key = tokenEntry.getKey();
-      String token = tokenEntry.getValue();
-      String value = (String) attributes.get(key);
-      if (value == null) {
-        LOGGER.warn("missing attribute: " + key);
-      }
-      workingTemplate.replace(token, value);
-    }
-    renderedJSON = new JSONObject(workingTemplate);
-    return renderedJSON;
+    LOGGER.debug("rendering class page container JSON");
+    return super.render(attributes, TOKENS_MAP);
   }
 }

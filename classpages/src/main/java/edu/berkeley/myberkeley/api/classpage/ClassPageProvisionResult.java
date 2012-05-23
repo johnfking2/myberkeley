@@ -25,14 +25,19 @@ import edu.berkeley.myberkeley.api.provision.SynchronizationState;
  */
 public class ClassPageProvisionResult {
   private String classId;
+  private String courseTitle;
   private SynchronizationState synchronizationState;
 
-  public ClassPageProvisionResult(String classId, SynchronizationState synchronizationState) {
+  public ClassPageProvisionResult(String classId, String courseTitle, SynchronizationState synchronizationState) {
     this.classId = classId;
+    this.courseTitle = courseTitle;
     this.synchronizationState = synchronizationState;
   }
   public String getClassId() {
     return this.classId;
+  }
+  public String getCourseTitle() {
+    return courseTitle;
   }
   public SynchronizationState getSynchronizationState() {
     return synchronizationState;
