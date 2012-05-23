@@ -2,6 +2,7 @@
   "classid" : %%CLASSID%%,
   "info_last_updated" : %%INFO_LAST_UPDATED%%,
   "courseinfo" : {
+    "title" : %%TITLE%%
     "format" : %%FORMAT%%,
     "grading" : %%GRADING%%,
     "prereqs" : %%PREREQS%%,

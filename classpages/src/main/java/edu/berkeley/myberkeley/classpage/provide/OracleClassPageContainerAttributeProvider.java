@@ -2,6 +2,8 @@ package edu.berkeley.myberkeley.classpage.provide;
 
 import com.google.common.collect.ImmutableMap;
 
+import edu.berkeley.myberkeley.classpage.ClassPageProvisionServlet;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,11 +21,11 @@ import java.util.Set;
 public class OracleClassPageContainerAttributeProvider extends AbstractClassAttributeProvider implements ClassAttributeProvider {
   private static final Logger LOGGER = LoggerFactory.getLogger(OracleClassPageContainerAttributeProvider.class);
   
-  static final String SELECT_CLASS_SQL = "select * from BSPACE_COURSE_INFO_VW bsi" +
-          "where bsi.TERM_YR = ? and bsi.TERm_CD = ? and bsi.COURSE_CNTL_NUM = ?";
+  protected static final String SELECT_CLASS_SQL = "select * from BSPACE_COURSE_INFO_VW bsi " +
+          "where bsi.TERM_YR = ? and bsi.TERM_CD = ? and bsi.COURSE_CNTL_NUM = ?";
   
-  static Map<String, String> ATTRIBUTE_TO_FIELD_MAP = ImmutableMap.of(
-    "description", "DESCRIPTION" );
+  protected Map<String, String> ATTRIBUTE_TO_FIELD_MAP = ImmutableMap.of(
+    "description", "CATALOG_DESCRIPTION" );
   
   protected OracleClassPageContainerAttributeProvider() {};
   
@@ -33,12 +35,13 @@ public class OracleClassPageContainerAttributeProvider extends AbstractClassAttr
   
   @Override
   public List<Map<String, Object>> getAttributes(String classId) {
-    List<Map<String, Object>> classPageHeaderAttributes = null;;
+    LOGGER.debug("getting class page container attributes for: " + classId);
+    List<Map<String, Object>> classPageContainerAttributes = null;;
     PreparedStatement preparedStatement = null;
     try {
       preparedStatement = connection.prepareStatement(SELECT_CLASS_SQL);
       try {
-        long term = Long.parseLong(classId.substring(0, 3));
+        long term = Long.parseLong(classId.substring(0, 4));
         preparedStatement.setLong(1, term);
       } catch (NumberFormatException e) {
         LOGGER.warn("coursId {} does not begin with a valid year number", classId);;
@@ -53,12 +56,12 @@ public class OracleClassPageContainerAttributeProvider extends AbstractClassAttr
         LOGGER.warn("coursId {} does not end with a valid course control number", classId);
         return null;
       }
-      
+//      preparedStatement.
       ResultSet resultSet = preparedStatement.executeQuery();
       if (resultSet.next()) {
-        classPageHeaderAttributes = getClassPageHeaderAttributesFromResultSet(resultSet, classId);
+        classPageContainerAttributes = getClassPageHeaderAttributesFromResultSet(resultSet, classId, ATTRIBUTE_TO_FIELD_MAP);
       } else {
-        classPageHeaderAttributes = null;
+        classPageContainerAttributes = null;
       }
     } catch (SQLException e) {
       LOGGER.warn(e.getMessage(), e);
@@ -71,7 +74,8 @@ public class OracleClassPageContainerAttributeProvider extends AbstractClassAttr
         }
       }
     }
-    return classPageHeaderAttributes;
+    LOGGER.debug("class page container attributes are: " + classPageContainerAttributes);
+    return classPageContainerAttributes;
   }
 //  TERM_YR
 //  TERM_CD
@@ -100,16 +104,17 @@ public class OracleClassPageContainerAttributeProvider extends AbstractClassAttr
 //  CATALOG_DESCRIPTION
 //  COURSE_OPTION
 //  DEPT_DESCRIPTION
-  private List<Map<String, Object>> getClassPageHeaderAttributesFromResultSet(ResultSet resultSet, String classId) throws SQLException {
-    List<Map<String, Object>> classPageHeaderAttributesList = new ArrayList<Map<String,Object>>();
-    Map<String, Object> courseHeaderAttributes = new HashMap<String, Object>();
-    courseHeaderAttributes.put("classid", classId);
-    Set<Entry<String, String>> mapEntries = ATTRIBUTE_TO_FIELD_MAP.entrySet();
+  
+  protected List<Map<String, Object>> getClassPageHeaderAttributesFromResultSet(ResultSet resultSet, String classId, Map<String, String> attributeFieldMap) throws SQLException {
+    List<Map<String, Object>> classPageContaimerAttributesList = new ArrayList<Map<String,Object>>();
+    Map<String, Object> classPageContaimerAttributes = new HashMap<String, Object>();
+    classPageContaimerAttributes.put(ClassPageProvisionServlet.PARAMS.classid.name(), classId);
+    Set<Entry<String, String>> mapEntries = attributeFieldMap.entrySet();
     for (Entry<String, String> mapEntry : mapEntries) {
-      courseHeaderAttributes.put(mapEntry.getKey(), resultSet.getObject(mapEntry.getValue()));
+      classPageContaimerAttributes.put(mapEntry.getKey(), resultSet.getObject(mapEntry.getValue()));
     }
-    classPageHeaderAttributesList.add(courseHeaderAttributes);
-    return classPageHeaderAttributesList;
+    classPageContaimerAttributesList.add(classPageContaimerAttributes);
+    return classPageContaimerAttributesList;
   }
 
 }

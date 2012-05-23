@@ -6,6 +6,7 @@ import edu.berkeley.myberkeley.api.provision.JdbcConnectionService;
 import edu.berkeley.myberkeley.api.provision.SynchronizationState;
 import edu.berkeley.myberkeley.classpage.provide.ClassAttributeProvider;
 import edu.berkeley.myberkeley.classpage.provide.OracleClassPageContainerAttributeProvider;
+import edu.berkeley.myberkeley.classpage.provide.OracleClassPageCourseInfoAttributeProvider;
 import edu.berkeley.myberkeley.classpage.render.ClassPageContainerRenderer;
 import edu.berkeley.myberkeley.classpage.render.ClassPageCourseInfoRenderer;
 import edu.berkeley.myberkeley.classpage.render.ClassPageRenderer;
@@ -46,7 +47,7 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
   public static final String STORE_RESOURCETYPE = "myberkeley/c";
   public static final String CLASS_PAGE_PROP_NAME = "classPzge";
   
-  public enum Section {
+  public enum Part {
     container,
     courseinfo,
     instructors,
@@ -56,9 +57,9 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
   
   private static final Logger LOGGER = LoggerFactory.getLogger(CalClassPageProvisionService.class);
   
-  Map<Section, ClassAttributeProvider> attributeProviders;
+  Map<Part, ClassAttributeProvider> attributeProviders;
   
-  Map<Section, ClassPageRenderer> renderers;
+  Map<Part, ClassPageRenderer> renderers;
   
   @Reference
   Repository repository;
@@ -66,7 +67,7 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
   @Reference
   JdbcConnectionService jdbcConnectionService;
   
-  Connection dbConnection;
+  Connection connection;
   
   @Override
   public JSONObject getClassPage(String classId) {
@@ -108,6 +109,7 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
     SynchronizationState synchronizationState = SynchronizationState.error;
     Content classPageContent = null;
     String classId = null;
+    String courseTitle = null;
     Map<String, Object> classPageContentMap = null;
     try {
       adminSession = repository.loginAdministrative();
@@ -117,6 +119,8 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
         throw new JSONException("classid key missing");
       }
       String path = STORE_NAME + "/" + classId;
+      JSONObject courseInfo = classPageJson.getJSONObject(Part.courseinfo.name());
+      courseTitle = courseInfo != null ? courseInfo.getString("title") : "NO TITLE";
       String stringifiedClassPage = classPageJson.toString();
       classPageContent = cm.get(path);
       if (classPageContent == null) {
@@ -150,7 +154,7 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
         }
       }
     }
-    return new ClassPageProvisionResult(classId, synchronizationState);
+    return new ClassPageProvisionResult(classId, courseTitle, synchronizationState);
   }
 
   @Override
@@ -159,18 +163,35 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
     Content classPageContent = null;
     Map<String, Object> classPageContentMap = null;
     String stringifiedClassPage = null;
+    String courseTitle = null;
+    JSONObject courseInfo = null;
     Session adminSession = null;
     SynchronizationState synchronizationState = SynchronizationState.error;
+    LOGGER.info("Provisioning class: " + classId);
     try {
       adminSession = repository.loginAdministrative();
       ContentManager cm = adminSession.getContentManager();
       String path = STORE_NAME + "/" + classId;
+      LOGGER.info("Storing classPage at: " + path);
       classPageContent = cm.get(path);
-      JSONObject classPageJSON = buildClassPage(classId);
-      stringifiedClassPage = classPageJSON.toString();  
+//      if (this.connection.isClosed()) {
+////        jdbcConnectionService..
+//      }
+      JSONObject classPageJson = buildClassPage(classId);
+      LOGGER.debug("rendered classPageJson is:\n" + classPageJson);
+      try {
+        courseInfo = classPageJson.getJSONObject(Part.courseinfo.name());
+        courseTitle = courseInfo != null ? courseInfo.getString("title") : "NO TITLE";
+      } catch (JSONException e) {
+        courseTitle = "NO TITLE";
+        LOGGER.warn(e.getMessage(), e);
+      }
+      stringifiedClassPage = classPageJson.toString();  
       if (classPageContent == null) {
         classPageContentMap = new HashMap<String, Object>(2);
         classPageContentMap.put("sling:resourceType", STORE_RESOURCETYPE);
+        classPageContentMap.put(CLASS_PAGE_PROP_NAME, stringifiedClassPage);
+        classPageContent = new Content(path, classPageContentMap);
         cm.update(classPageContent);
         synchronizationState = SynchronizationState.created;
       }
@@ -195,15 +216,15 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
       }      
     }
     
-    return result;
+    return new ClassPageProvisionResult(classId, courseTitle, synchronizationState);
   }
 
   private JSONObject buildClassPage(String classId) {
     JSONObject classPage = null;
     CalClassPageBuilder builder = new CalClassPageBuilder();
-    JSONObject classPag = builder.begin(classId)
-            .insert(Section.courseinfo)
-            .end();
+    classPage = builder.begin(classId)
+                .insert(Part.courseinfo)
+                .end();
     return classPage;
   }
 
@@ -218,8 +239,8 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
     
     private CalClassPageBuilder begin(String classId) {
       this.classId = classId;
-      ClassAttributeProvider attributeProvider = attributeProviders.get(Section.container);
-      ClassPageRenderer renderer = renderers.get(Section.container);
+      ClassAttributeProvider attributeProvider = attributeProviders.get(Part.container);
+      ClassPageRenderer renderer = renderers.get(Part.container);
       List<Map<String, Object>> attributes = attributeProvider.getAttributes(this.classId);
       JSONObject container = null;
       try {
@@ -231,15 +252,15 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
       return this;
     }
 
-    private CalClassPageBuilder insert(Section section) {
+    private CalClassPageBuilder insert(Part part) {
       JSONObject renderedSection = null;
-      ClassAttributeProvider attributeProvider = attributeProviders.get(section);
-      ClassPageRenderer renderer = renderers.get(section);
+      ClassAttributeProvider attributeProvider = attributeProviders.get(part);
+      ClassPageRenderer renderer = renderers.get(part);
       List<Map<String, Object>> attributesList = attributeProvider.getAttributes(this.classId);
       if (attributesList.size() == 1) {
         try {
           renderedSection = renderer.render(attributesList.get(0));
-          this.classPage.put(section.name(), renderedSection);
+          this.classPage.put(part.name(), renderedSection);
         } catch (JSONException e) {
           LOGGER.warn(e.getMessage(), e);
         }
@@ -270,32 +291,33 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
     Dictionary<?, ?> props = componentContext.getProperties();
     
     try {
-      this.dbConnection = this.jdbcConnectionService.getConnection();
+      this.connection = this.jdbcConnectionService.getConnection();
     } catch (SQLException e) {
       LOGGER.warn(e.getMessage(), e);
       deactivate(componentContext);
     }
     // cab't get an ImmutableMap to handle types so using plain HashMaqp    
-    this.attributeProviders = new HashMap<Section, ClassAttributeProvider>();
-    this.attributeProviders.put(Section.container, new OracleClassPageContainerAttributeProvider(this.dbConnection));
+    this.attributeProviders = new HashMap<Part, ClassAttributeProvider>();
+    this.attributeProviders.put(Part.container, new OracleClassPageContainerAttributeProvider(this.connection));
+    this.attributeProviders.put(Part.courseinfo, new OracleClassPageCourseInfoAttributeProvider(this.connection));
 
-    this.renderers = new HashMap<Section, ClassPageRenderer>();
-    this.renderers.put(Section.container, new ClassPageContainerRenderer(repository, null));
-    this.renderers.put(Section.courseinfo, new ClassPageCourseInfoRenderer(repository, null));
+    this.renderers = new HashMap<Part, ClassPageRenderer>();
+    this.renderers.put(Part.container, new ClassPageContainerRenderer(repository, null));
+    this.renderers.put(Part.courseinfo, new ClassPageCourseInfoRenderer(repository, null));
       
   }
   
   @SuppressWarnings("deprecation")
   @Deactivate
   protected void deactivate(ComponentContext componentContext) {
-    if (this.dbConnection != null) {
+    if (this.connection != null) {
       try {
-        this.dbConnection.close();
+        this.connection.close();
       } catch (SQLException e) {
         LOGGER.info("Exception while closing dbConnection", e);
         throw new ComponentException("Could not close connection");
       } finally {
-        this.dbConnection = null; 
+        this.connection = null; 
         this.jdbcConnectionService = null;
       }
     }
