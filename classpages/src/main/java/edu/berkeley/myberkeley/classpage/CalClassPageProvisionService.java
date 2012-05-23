@@ -186,7 +186,11 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
         courseTitle = "NO TITLE";
         LOGGER.warn(e.getMessage(), e);
       }
+<<<<<<< HEAD
       stringifiedClassPage = classPageJson.toString();
+=======
+      stringifiedClassPage = classPageJson.toString();  
+>>>>>>> da8becdf2362628b1eb8c0ea9ebe2e8a58b5af60
       if (classPageContent == null) {
         classPageContentMap = new HashMap<String, Object>(2);
         classPageContentMap.put("sling:resourceType", STORE_RESOURCETYPE);
