@@ -186,7 +186,7 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
         courseTitle = "NO TITLE";
         LOGGER.warn(e.getMessage(), e);
       }
-      stringifiedClassPage = classPageJson.toString();  
+      stringifiedClassPage = classPageJson.toString();
       if (classPageContent == null) {
         classPageContentMap = new HashMap<String, Object>(2);
         classPageContentMap.put("sling:resourceType", STORE_RESOURCETYPE);
@@ -304,7 +304,6 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
     this.renderers = new HashMap<Part, ClassPageRenderer>();
     this.renderers.put(Part.container, new ClassPageContainerRenderer(repository, null));
     this.renderers.put(Part.courseinfo, new ClassPageCourseInfoRenderer(repository, null));
-      
   }
   
   @SuppressWarnings("deprecation")
@@ -317,7 +316,7 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
         LOGGER.info("Exception while closing dbConnection", e);
         throw new ComponentException("Could not close connection");
       } finally {
-        this.connection = null; 
+        this.connection = null;
         this.jdbcConnectionService = null;
       }
     }
