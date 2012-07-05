@@ -244,6 +244,9 @@
                   <jvmarg value="-Xmx${sling.memory}"/>
                   <jvmarg value="-XX:MaxPermSize=256m"/>
                   <jvmarg value="-server"/>
+                  <jvmarg value="-verbose:gc"/>
+                  <jvmarg value="-XX:+PrintGCTimeStamps"/>
+                  <jvmarg value="-XX:+PrintGCDetails"/>                               
                   <sysproperty key="felix.fileinstall.dir" value="load"/>
                   <sysproperty key="felix.fileinstall.noInitialDelay" value="true"/>
                   <sysproperty key="felix.fileinstall.disableConfigSave" value="false"/>
