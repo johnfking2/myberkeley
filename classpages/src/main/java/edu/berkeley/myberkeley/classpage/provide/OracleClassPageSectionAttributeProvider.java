@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -49,7 +48,7 @@ public class OracleClassPageSectionAttributeProvider extends
     tempMap.put("term_code", "TERM_CD");
     SECTION_ATTRIBUTE_TO_COLUMN_MAP = ImmutableMap.copyOf(tempMap);
   }
-  
+
   protected static final String SELECT_INSTRUCTORS_SQL = "select * from BSPACE_INSTRUCTOR_INFO_VW bii " +
   "where bii.INSTRUCTOR_LDAP_UID in " +
   "(select bci.INSTRUCTOR_LDAP_UID from BSPACE_COURSE_INSTRUCTOR_VW bci " +
@@ -102,9 +101,6 @@ public class OracleClassPageSectionAttributeProvider extends
   public OracleClassPageSectionAttributeProvider() {
   }
 
-  public OracleClassPageSectionAttributeProvider(Connection connection) {
-    super(connection);
-  }
   @Override
   public List<Map<String, Object>> getAttributes(String classId) {
     LOGGER.debug("getting sections attributes for: " + classId);
@@ -220,6 +216,7 @@ public class OracleClassPageSectionAttributeProvider extends
     LOGGER.debug("After adding instructors, sectionsAttributes are: " + sectionsAttributes);
   }
 
+  @Override
   protected void expandAttributes(Map<String, Object> classPageSectionAttributes) {
     expandLocationAttributes(classPageSectionAttributes);
     expandScheduleAttributes(classPageSectionAttributes);

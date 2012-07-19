@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
@@ -202,9 +202,11 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
       String path = STORE_NAME + "/" + classId;
       LOGGER.info("Storing classPage at: " + path);
       classPageContent = cm.get(path);
-//      if (this.connection.isClosed()) {
-////        jdbcConnectionService..
-//      }
+      Connection connection = null;
+      if (this.connection.isClosed()) {
+        connection = jdbcConnectionService.getConnection();
+      }
+      initAttributeProviders(connection);
       classPageJson = buildClassPage(classId);
       try {
         LOGGER.debug("rendered classPageJson is:\n" + classPageJson.toString(2));
@@ -228,11 +230,16 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
         cm.update(classPageContent);
         synchronizationState = SynchronizationState.refreshed;
       }
+      if (this.connection != null) {
+        connection.close();
+      }
     } catch (ClientPoolException e) {
       LOGGER.warn(e.getMessage(), e);
     } catch (StorageClientException e) {
       LOGGER.warn(e.getMessage(), e);
     } catch (AccessDeniedException e) {
+      LOGGER.warn(e.getMessage(), e);
+    } catch (SQLException e) {
       LOGGER.warn(e.getMessage(), e);
     } finally {
       if (adminSession != null) {
@@ -245,6 +252,13 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
     }
 
     return new ClassPageProvisionResult(classId, classPageJson, synchronizationState);
+  }
+
+  private void initAttributeProviders(Connection connection) {
+    Collection<ClassAttributeProvider> attributeProviders = this.attributeProviders.values();
+    for (ClassAttributeProvider classAttributeProvider : attributeProviders) {
+      classAttributeProvider.setConnection(connection);
+    }
   }
 
   private JSONObject buildClassPage(String classId) {
@@ -357,11 +371,11 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
     }
     // cab't get an ImmutableMap to handle types so using plain HashMaqp
     this.attributeProviders = new HashMap<Part, ClassAttributeProvider>();
-    this.attributeProviders.put(Part.container, new OracleClassPageContainerAttributeProvider(this.connection));
-    this.attributeProviders.put(Part.courseinfo, new OracleClassPageCourseInfoAttributeProvider(this.connection));
-    this.attributeProviders.put(Part.schedule, new OracleClassPageScheduleAttributeProvider(this.connection));
-    this.attributeProviders.put(Part.instructors, new OracleClassPagePrimaryInstructorAttributeProvider(this.connection));
-    this.attributeProviders.put(Part.sections, new OracleClassPageSectionAttributeProvider(this.connection));
+    this.attributeProviders.put(Part.container, new OracleClassPageContainerAttributeProvider());
+    this.attributeProviders.put(Part.courseinfo, new OracleClassPageCourseInfoAttributeProvider());
+    this.attributeProviders.put(Part.schedule, new OracleClassPageScheduleAttributeProvider());
+    this.attributeProviders.put(Part.instructors, new OracleClassPagePrimaryInstructorAttributeProvider());
+    this.attributeProviders.put(Part.sections, new OracleClassPageSectionAttributeProvider());
 
     this.renderers = new HashMap<Part, ClassPageRenderer>();
     this.renderers.put(Part.container, new ClassPageContainerRenderer(repository, null));
