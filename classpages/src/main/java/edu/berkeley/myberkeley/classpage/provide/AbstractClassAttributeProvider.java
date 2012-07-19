@@ -32,12 +32,9 @@ public abstract class AbstractClassAttributeProvider implements ClassAttributePr
     DAYS_EXPANSION_MAP = ImmutableMap.copyOf(tempMap);
   }
 
-  protected AbstractClassAttributeProvider() {};
+  public AbstractClassAttributeProvider() {};
 
-  public AbstractClassAttributeProvider(Connection connection) {
-    this.connection = connection;
-  }
-
+  @Override
   public abstract List<Map<String, Object>> getAttributes(String classId);
 
   protected abstract void expandAttributes(Map<String, Object> classPageAttributes);
@@ -79,5 +76,9 @@ public abstract class AbstractClassAttributeProvider implements ClassAttributePr
       LOGGER.warn("Couldn't find expanded days for " + days);
     }
     attributes.put("weekdays", expandedDays);
+  }
+
+  public void setConnection(Connection connection) {
+    this.connection = connection;
   }
  }

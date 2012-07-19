@@ -3,8 +3,6 @@ package edu.berkeley.myberkeley.classpage.provide;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.util.List;
 import java.util.Map;
 
 public class OracleClassPageScheduleAttributeProvider extends
@@ -13,10 +11,6 @@ public class OracleClassPageScheduleAttributeProvider extends
   private static final Logger LOGGER = LoggerFactory.getLogger(OracleClassPageScheduleAttributeProvider.class);
 
   public OracleClassPageScheduleAttributeProvider() {
-  }
-
-  public OracleClassPageScheduleAttributeProvider(Connection connection) {
-    super(connection);
   }
 
   @Override

@@ -2,12 +2,9 @@ package edu.berkeley.myberkeley.classpage.provide;
 
 import com.google.common.collect.ImmutableMap;
 
-import edu.berkeley.myberkeley.classpage.ClassPageProvisionServlet;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,11 +37,7 @@ public class OracleClassPagePrimaryInstructorAttributeProvider extends OracleCla
 //IS_AFFILIATE
 //AFFILIATIONS
 
-  protected OracleClassPagePrimaryInstructorAttributeProvider() {};
-
-  public OracleClassPagePrimaryInstructorAttributeProvider(Connection connection) {
-    super(connection);
-  }
+  public OracleClassPagePrimaryInstructorAttributeProvider() {};
 
   @Override
   public List<Map<String, Object>> getAttributes(String classId) {
