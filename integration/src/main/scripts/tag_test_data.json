@@ -1,0 +1,276 @@
+{
+ "items": 100,
+ "results": [{
+            "sling:resourceType": "sakai/pooled-content",
+             "sakai:pooled-content-manager": [
+                "675750"
+           ],
+           "_path": "iaOPOdAuaa",
+           "sakai:fileextension": ".JPG",
+           "sakai:description": "COSE meeting 24 Aug 2011",
+           "sakai:pool-content-created-for": "675750",
+           "sakai:pooled-content-file-name": "IMG_1719.JPG",
+           "_versionHistoryId": "LvGwkM6iEeCI_zdhqeXzCg+",
+           "sakai:showcomments": "true",
+           "sakai:tags": [
+             "directory/bio_med_sciences/conservation_biology",
+             "directory/bio_med_sciences/biology",
+             "directory/bio_med_sciences/botany_plant_biology",
+             "directory/departments/cnr",
+             "directory/bio_med_sciences/zoology_and_animal_biology",
+             "directory/col_groups",
+             "directory/natural_resources_and_conservation",
+             "directory/bio_med_sciences",
+             "directory/bio_med_sciences/nutrition",
+             "directory/agriculture_and_related_sciences",
+             "directory/bio_med_sciences/ecology",
+             "directory/bio_med_sciences/environmental_biology"
+           ],
+           "permissions": {
+             "set_property": true,
+             "read": true,
+             "remove": true
+           }
+         },
+         {
+	      "aboutme": {
+	        "init": "true",
+	        "elements": {
+	          "aboutme": {
+	            "value": "",
+	            "_path": "/~877099/public/authprofile/aboutme/elements/aboutme"
+	          },
+	          "tags": {
+	            "value": "",
+	            "_path": "/~877099/public/authprofile/aboutme/elements/tags"
+	          },
+	          "academicinterests": {
+	            "value": "",
+	            "_path": "/~877099/public/authprofile/aboutme/elements/academicinterests"
+	          },
+	          "hobbies": {
+	            "value": "UCB Pie Queens Ultimate Frisbee",
+	            "_path": "/~877099/public/authprofile/aboutme/elements/hobbies"
+	          },
+	          "personalinterests": {
+	            "value": "",
+	            "_path": "/~877099/public/authprofile/aboutme/elements/personalinterests"
+	          },
+	          "_path": "/~877099/public/authprofile/aboutme/elements"
+	        },
+	        "_path": "/~877099/public/authprofile/aboutme"
+	      },
+	      "institutional": {
+	        "init": "true",
+	        "elements": {
+	          "college": {
+	            "value": "College of Natural Resources",
+	            "_path": "/~877099/public/authprofile/institutional/elements/college"
+	          },
+	          "role": {
+	            "value": "Undergraduate Student",
+	            "_path": "/~877099/public/authprofile/institutional/elements/role"
+	          },
+	          "major": {
+	            "value": "ENVIRONMENTAL SCIENCES",
+	            "_path": "/~877099/public/authprofile/institutional/elements/major"
+	          },
+	          "_path": "/~877099/public/authprofile/institutional/elements"
+	        },
+	        "_path": "/~877099/public/authprofile/institutional"
+	      },
+	      "hash": "877099",
+	      "userid": "877099",
+	      "homePath": "/~877099",
+	      "_path": "/~877099/public/authprofile",
+	      "sakai:tag-uuid": [
+	        "1686cfbe-2d96-4168-80d1-3f18c57cf001",
+	        "8bfcbc99-c6c6-4545-883b-be9831a43bb2",
+	        "547b982a-f57e-4dec-aea6-8559a6d40873",
+	        "cd91f090-35db-46cd-a115-48f2dd10a744",
+	        "b6e9d53f-b921-4c31-9eac-52ba2f318425",
+	        "59d0bf19-833c-421b-9192-3625fa62f876",
+	        "e5c80773-cc56-49aa-81a5-2a84d6eccacd",
+	        "2ac3606d-fcc4-41e4-a5f8-d7f0eb86c422",
+	        "86bc5ba0-0adc-4c48-8778-3b10b388dea2",
+	        "de1c3ded-b923-41ed-889e-b70b657c3dee",
+	        "3ceb895d-5efa-45f4-98bc-4efd67ed914b",
+	        "c7061eeb-821a-46d0-a045-794753fa05a7"
+	      ],
+	      "userprogress": {
+	        "halfCompletedProfile": true,
+	        "madeContactRequest": true,
+	        "_path": "/~877099/public/authprofile/userprogress"
+	      },
+	      "sling:resourceType": "sakai/user-profile",
+	      "sakai:tags": [
+	        "directory/bio_med_sciences/conservation_biology",
+	        "directory/bio_med_sciences/biology",
+	        "directory/bio_med_sciences/botany_plant_biology",
+	        "directory/departments/cnr",
+	        "directory/bio_med_sciences/zoology_and_animal_biology",
+	        "directory/col_groups",
+	        "directory/natural_resources_and_conservation",
+	        "directory/bio_med_sciences",
+	        "directory/bio_med_sciences/nutrition",
+	        "directory/agriculture_and_related_sciences",
+	        "directory/bio_med_sciences/ecology",
+	        "directory/bio_med_sciences/environmental_biology"
+	      ],
+	      "publications": {
+	        "init": "true",
+	        "_path": "/~877099/public/authprofile/publications"
+	      },
+	      "myberkeley": {
+	        "elements": {
+	          "joinDate": {
+	            "date": "Thu Aug 25 2011 22:15:54 GMT-0700 (PDT)",
+	            "_path": "/~877099/public/authprofile/myberkeley/elements/joinDate"
+	          },
+	          "participant": {
+	            "value": "true",
+	            "_path": "/~877099/public/authprofile/myberkeley/elements/participant"
+	          },
+	          "_path": "/~877099/public/authprofile/myberkeley/elements"
+	        },
+	        "_path": "/~877099/public/authprofile/myberkeley"
+	      },
+	      "email": {
+	        "init": "true",
+	        "elements": {
+	          "email": {
+	            "value": "rqewwpq.nrtwbbit@example.edu",
+	            "_path": "/~877099/public/authprofile/email/elements/email"
+	          },
+	          "_path": "/~877099/public/authprofile/email/elements"
+	        },
+	        "_path": "/~877099/public/authprofile/email"
+	      },
+	      "basic": {
+	        "access": "everybody",
+	        "elements": {
+	          "sakai:tags": {
+	            "value": [
+	              "directory/bio_med_sciences/conservation_biology",
+	              "directory/bio_med_sciences/biology",
+	              "directory/bio_med_sciences/botany_plant_biology",
+	              "directory/departments/cnr",
+	              "directory/bio_med_sciences/zoology_and_animal_biology",
+	              "directory/col_groups",
+	              "directory/natural_resources_and_conservation",
+	              "directory/bio_med_sciences",
+	              "directory/bio_med_sciences/nutrition",
+	              "directory/agriculture_and_related_sciences",
+	              "directory/bio_med_sciences/ecology",
+	              "directory/bio_med_sciences/environmental_biology"
+	            ]
+	          },
+	          "lastName": {
+	            "value": "NRTWBBIT"
+	          },
+	          "preferredName": {
+	            "value": "Danielle Ngo"
+	          },
+	          "firstName": {
+	            "value": "RQEWWPQ"
+	          }
+	        }
+	      },
+	      "locations": {
+	        "init": "true",
+	        "_path": "/~877099/public/authprofile/locations"
+	      },
+	      "rep:userId": "877099",
+	      "counts": {
+	        "contentCount": 0,
+	        "countLastUpdate": 1344268427487,
+	        "contactsCount": 0,
+	        "membershipsCount": 0
+	      },
+	      "sakai:excludeSearch": false,
+	      "user": "877099",
+	      "sakai:status": "offline",
+	      "sakai:location": "none"
+	    },
+            {
+      "sakai:category": "group",
+      "sakai:group-description": "The Society & Environment major introduces students to the main approaches and theory for environmental social sciences. This includes how social science tools can be applied to environmental problems, and how social science theories contribute to understanding environmental problems.\n\nFor more information, please look at our website at http://nature.berkeley.edu/site/majors/se.php",
+      "lastModified": 1328571599699,
+      "sakai:group-title": "Society & Environment Major",
+      "sakai:group-joinable": "yes",
+      "homePath": "/~Society-Environment-Major",
+      "_path": "/~Society-Environment-Major/public/authprofile",
+      "sakai:tag-uuid": [
+        "ccc71e6b-a6ec-4174-9a27-0e7bc2e5da15",
+        "30d8d111-d6b2-474d-b8fa-d598e31668a2",
+        "190338b9-169e-4eed-9aed-954a582141ec",
+        "5f808863-2ca0-40b2-a04e-2e51e51a6c65",
+        "c1b7023e-c6fa-46c5-ac2f-a5d992061ce6",
+        "21339037-7a64-49b8-baf1-efaa6e8d6117",
+        "eed9d88e-e881-49f8-a1ce-40cbadb906b0",
+        "2ac3606d-fcc4-41e4-a5f8-d7f0eb86c422",
+        "223ae82b-da3b-4bbf-8ed3-2baeb7b27a3b",
+        "2c1c7ef8-c851-45ab-b570-a3226cd9fed9",
+        "817a9a53-97de-4ee0-ad4f-37f344d1e541",
+        "bf9a6ba7-18bc-45b9-b687-2b2326caa47d",
+        "0a1a4700-2b1e-4953-a63c-288a9e9ad292"
+      ],
+      "sling:resourceType": "sakai/group-profile",
+      "sakai:tags": [
+        "society",
+        "CNR",
+        "directory/law",
+        "directory/departments/cnr",
+        "environmental politics",
+        "directory/social_sciences/international_and_global_studies",
+        "environmental law",
+        "environmental policy",
+        "directory/natural_resources_and_conservation/environmental_studies",
+        "directory/natural_resources_and_conservation/natural_resources_management_policy",
+        "environment",
+        "directory/social_sciences",
+        "sustainability"
+      ],
+      "sakai:group-id": "Society-Environment-Major",
+      "createdBy": "admin",
+      "created": 1314910275087,
+      "basic": {
+        "access": "everybody",
+        "elements": {
+          "sakai:tags": {
+            "value": [
+              "society",
+              "CNR",
+              "directory/law",
+              "directory/departments/cnr",
+              "environmental politics",
+              "directory/social_sciences/international_and_global_studies",
+              "environmental law",
+              "environmental policy",
+              "directory/natural_resources_and_conservation/environmental_studies",
+              "directory/natural_resources_and_conservation/natural_resources_management_policy",
+              "environment",
+              "directory/social_sciences",
+              "sustainability"
+            ]
+          },
+          "lastName": {
+            "value": "unknown"
+          },
+          "firstName": {
+            "value": "unknown"
+          }
+        }
+      },
+      "lastModifiedBy": "admin",
+      "counts": {
+        "contentCount": 2,
+        "countLastUpdate": 1344268428315,
+        "membersCount": 11
+      },
+      "groupid": "Society-Environment-Major",
+      "sakai:excludeSearch": false,
+      "sakai:group-visible": "public"
+    }],
+          "total": 1
+      }
