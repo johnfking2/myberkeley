@@ -1,0 +1,228 @@
+-----------------------------------------------------------------------
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/bio_med_sciences -F :operation=delete
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/bio_med_sciences.json
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/bio_med_sciences.json -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/bio_med_sciences
+
+----------------------------------------------------------------------
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/col_groups -F :operation=delete
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/col_groups.json
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/col_groups.json -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/col_groups
+-------------
+directory/bio_med_sciences/conservation_biology
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/bio_med_sciences/conservation_biology -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/bio_med_sciences/conservation_biology.json
+
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/bio_med_sciences/conservation_biology.json -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/bio_med_sciences/conservation_biology
+
+---------------------------------------------------------------
+bio_med_sciences/botany_plant_biology
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/bio_med_sciences/botany_plant_biology -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/bio_med_sciences/botany_plant_biology.json
+
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/bio_med_sciences/botany_plant_biology.json -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/bio_med_sciences/botany_plant_biology
+-----------------------------------------------
+-------------------------
+directory/bio_med_sciences/biology
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/bio_med_sciences/biology -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/bio_med_sciences/biology.json
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/bio_med_sciences/biology -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/bio_med_sciences/biology
+---------------------------------------
+
+---------------------------------------
+
+directory/departments
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/departments -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/departments.json
+k
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/departments -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/departments
+----------------------------------------
+
+directory/departments/cnr
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/departments/cnr -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/departments/cnr.json
+k
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/departments/cnr -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/departments/cnr
+
+------------------------------------------------
+directory/bio_med_sciences/zoology_and_animal_biology
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/bio_med_sciences/zoology_and_animal_biology -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/bio_med_sciences/zoology_and_animal_biology.json
+
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/bio_med_sciences/cnr -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/bio_med_sciences/zoology_and_animal_biology
+
+---------------------------------------------------------------
+directory/natural_resources_and_conservation
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/natural_resources_and_conservation -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/natural_resources_and_conservation.json
+
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/natural_resources_and_conservation -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/natural_resources_and_conservation
+--------------------------------------
+
+directory/bio_med_sciences
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/bio_med_sciences -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/bio_med_sciences.json
+
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/bio_med_sciences -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/bio_med_sciences
+---------------------------------------
+
+directory/bio_med_sciences/nutrition
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/bio_med_sciences/nutrition -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/bio_med_sciences/nutrition.json
+
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/bio_med_sciences/nutrition -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/bio_med_sciences/nutrition
+________________________________________
+
+directory/agriculture_and_related_sciences
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/agriculture_and_related_sciences -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/agriculture_and_related_sciences.json
+
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/agriculture_and_related_sciences -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/agriculture_and_related_sciences
+------------------------------------------------
+
+directory/bio_med_sciences/ecology
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/bio_med_sciences/ecology -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/bio_med_sciences/ecology.json
+
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/bio_med_sciences/ecology -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/bio_med_sciences/ecology
+-----------------------------------------------------
+
+directory/bio_med_sciences/environmental_biology
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/bio_med_sciences/environmental_biology -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/bio_med_sciences/environmental_biology.json
+
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/bio_med_sciences/environmental_biology -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/bio_med_sciences/environmental_biology
+
+----------------------------------------------------
+
+directory/natural_resources_and_conservation/environmental_science
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/natural_resources_and_conservation/environmental_science -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/natural_resources_and_conservation/environmental_science.json
+
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/natural_resources_and_conservation/environmental_science -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/natural_resources_and_conservation/environmental_science
+------------------------------------------------------------
+
+directory/bio_med_sciences/microbiology
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:808environmental_biology0/tags/directory/bio_med_sciences/microbiology -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/bio_med_sciences/microbiology.json
+
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/bio_med_sciences/microbiology -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/bio_med_sciences/microbiology
+-------------------------------------
+
+directory/architecture
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/architecture -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/architecture.json
+
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/architecture -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/architecture
+-----------------------------------------------------------------------------
+
+directory/medicine_and_related_clinical_sciences
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/medicine_and_related_clinical_sciences -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/medicine_and_related_clinical_sciences.json
+
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/medicine_and_related_clinical_sciences -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/medicine_and_related_clinical_sciences
+-----------------------------------------------------------------------------
+
+directory/PWD
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/PWD/ -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/physical_sciences.json
+
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/physical_sciences -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/physical_sciences
+-------------------------------------------
+
+directory/physical_sciences/atmospheric_chemistry_and_climatology
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/physical_sciences/atmospheric_chemistry_and_climatology -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/physical_sciences/atmospheric_chemistry_and_climatology.json
+
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/physical_sciences/atmospheric_chemistry_and_climatology -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/physical_sciences/atmospheric_chemistry_and_climatology
+-------------------------------------------
+
+directory/medicine_and_related_clinical_sciences/environmental_health
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/medicine_and_related_clinical_sciences/environmental_health -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/medicine_and_related_clinical_sciences/environmental_health.json
+
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/medicine_and_related_clinical_sciences/environmental_health -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/medicine_and_related_clinical_sciences/environmental_health
+------------------------------------------------------------------
+
+directory/social_sciences
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/social_sciences -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/social_sciences.json
+
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/social_sciences -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/social_sciences
+----------------------------------------------------------
+
+directory/social_sciences/international_and_global_studies
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/social_sciences/international_and_global_studies -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/social_sciences/international_and_global_studies.json
+
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/social_sciences/international_and_global_studies -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/social_sciences/international_and_global_studies
+-------------------------------------------
+??????????????????????????????
+directory/natural_resources_and_conservation/natural_resources_management_policy
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/natural_resources_and_conservation/natural_resources_management_policy -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/natural_resources_and_conservation/natural_resources_management_policy.json
+
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/natural_resources_and_conservation/natural_resources_management_policy -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/natural_resources_and_conservation/natural_resources_management_policy
+--------------------------------------------------------
+
+directory/social_sciences/economics
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/social_sciences/economics -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/social_sciences/economics.json
+
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/social_sciences/economics -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/social_sciences/economics
+-------------------------------------------------------------------
+
+directory/directory/physical_sciences/hydrology_and_water_resources/hydrology_and_water_resources
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/physical_sciences/hydrology_and_water_resources -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/physical_sciences/hydrology_and_water_resources.json
+
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/physical_sciences/hydrology_and_water_resources -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/physical_sciences/hydrology_and_water_resources
+-------------------------------------------
+
+directory/natural_resources_and_conservation/environmental_studies
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/natural_resources_and_conservation/environmental_studies -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/natural_resources_and_conservation/environmental_studies.json
+
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/natural_resources_and_conservation/environmental_studies -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/natural_resources_and_conservation/environmental_studies
+------------------------------------------------------
+
+/tags/directory/col_groups
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/col_groups.json -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/col_groups.json
+
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/col_groups -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/col_groups
+----------------------------------------------------
+
+directory/visual_and_performing_arts
+curl -i -L -e http://localhost:8080 -g -u admin:{PWD}  http://localhost:8080/tags/directory/visual_and_performing_arts.json -F :operation=delete
+
+curl -i -L -g -u admin:{PWD} http://localhost:8080/tags/directory/visual_and_performing_arts.json
+
+curl -i -L -g -u admin:{PWD} -e http://localhost:8080 http://localhost:8080/tags/directory/visual_and_performing_arts -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/visual_and_performing_arts
+
+------------------------------------------------
