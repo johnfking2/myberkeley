@@ -35,7 +35,7 @@ module MyBerkeleyData
       else
         @tags_used = get_directory_tags_used
       end
-      @dry_run = options[:dryrun]
+        @dry_run = options[:dryrun]
     end
       
     def parse_mapping(map_data_file)
@@ -127,17 +127,17 @@ module MyBerkeleyData
       tags_url = @sling.url_for path
       delete_tag_params = {}
       delete_tag_params[":operation"] = "deletetag"
-      delete_tag_params["key"] = old_tag
+      delete_tag_params["key"] = "/tags/" + old_tag
       
-      add_tag_params = {}
+        add_tag_params = {}
       add_tag_params[":operation"] = "tag"
       add_tag_params["key"] = "/tags/" + new_tag
       if @dry_run
-        @log.debug "dry run, would delete old_tag first at #{tags_url} with params #{delete_tag_params}"
+        @log.info "dry run, would delete old_tag first at #{tags_url} with params #{delete_tag_params}"
         if "DELETE".eql? new_tag
-          @log.debug "dry run,.new_tag is DELETE, only deleting old tag"
+          @log.info "dry run,.new_tag is DELETE, only deleting old tag"
         else
-          @log.debug "dry run, would add new_tag at #{tags_url} with params #{add_tag_params}"
+          @log.info "dry run, would add new_tag at #{tags_url} with params #{add_tag_params}"
         end
       else
         @log.debug("deleting tag at #{path} with params: #{delete_tag_params}")
@@ -146,15 +146,17 @@ module MyBerkeleyData
           @log.info("delete tag failed at #{path} with params: #{delete_tag_params} with response.code #{res.code}")
           #because tag does not exist in tag store so recreate it there by tagging item again
           # DeleteTagOperation.java refuses to delete a tag not already in the tag store
+          
+          #http://localhost:8080/tags/directory/col_groups -F sling:resourceType=sakai/tag -F sakai:tag-count=0 -Fsakai:tag-name=directory/col_groups
           recreate_params = {}
-          recreate_params[":operation"] = "tag"
-          recreate_params["key"] = old_tag
-          @log.debug("recreating tag at #{path} with params: #{recreate_params}")
-          res = @sling.execute_post(@sling.url_for(path), recreate_params)
+          recreate_params["sling:resourceType"] = "sakai/tag"
+          recreate_params["sakai:tag-name"] = old_tag
+          @log.debug("recreating tag at #{"/tags/" + old_tag} with params: #{recreate_params}")
+          res = @sling.execute_post(@sling.url_for("/tags/" + old_tag), recreate_params)
           @log.debug("recreating post response.code #{res.code}")
           # now attempt to delete after recreation
           if ("200".eql? res.code)
-            @log.debug("after recreations, deleting tag at #{path} with params: #{delete_tag_params}")
+            @log.debug("after recreation, deleting tag at #{path} with params: #{delete_tag_params}")
             res = @sling.execute_post(@sling.url_for(path), delete_tag_params)
           end
         end
