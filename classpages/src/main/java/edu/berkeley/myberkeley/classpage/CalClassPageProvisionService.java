@@ -202,7 +202,6 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
       String path = STORE_NAME + "/" + classId;
       LOGGER.info("Storing classPage at: " + path);
       classPageContent = cm.get(path);
-      Connection connection = null;
       if (this.connection.isClosed()) {
         connection = jdbcConnectionService.getConnection();
       }
