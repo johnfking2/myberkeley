@@ -29,6 +29,8 @@ import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.commons.json.JSONArray;
 import org.apache.sling.commons.json.JSONException;
 import org.apache.sling.commons.json.JSONObject;
+import org.apache.sling.commons.json.jcr.JsonJcrNode;
+import org.apache.sling.jcr.api.SlingRepository;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.ComponentException;
 import org.sakaiproject.nakamura.api.lite.ClientPoolException;
@@ -50,6 +52,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+
 @Component(metatype = true,
     label = "CalCentral :: Class Page Provision Service", description = "Create & Store Class Page Data")
 @Service
@@ -57,6 +63,7 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
 
   public static final String STORE_NAME = "_myberkeley_classpage";
   public static final String CLASS_PAGE_PROP_NAME = "classPage";
+  public static final String CLASS_PAGE_TEMPLATE_NAME = "classpageprovision";
 
   public enum Part {
     container,
@@ -83,6 +90,9 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
   Repository repository;
 
   @Reference
+  SlingRepository slingRepository;
+
+  @Reference
   JdbcConnectionService jdbcConnectionService;
 
   Connection connection;
@@ -97,16 +107,9 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
       Content classPageContent = cm.get(STORE_NAME + "/" + classId);
       if (classPageContent != null) {
         Object classPageObj = classPageContent.getProperty(CLASS_PAGE_PROP_NAME);
+        // need the Object.toString() in case the classPageOby is a LongString
+        // which we can't user directly as it's not exported from the core bundle
         classPage = new JSONObject(classPageObj.toString());
-//        if (classPageStr instanceof String) {
-//          classPage = new JSONObject((String)classPageStr);
-//        } else if (classPageStr instanceof LongString) {
-//          classPage = new JSONObject(((LongString) classPageStr).toString());
-//        }
-//        else {
-//          // handle unknown type??
-//        }
-
       } else {
         LOGGER.warn("No classPage data found for classId: " + classId);
       }
@@ -275,7 +278,7 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
   /**
    * inner class to build the class page JSON
    */
-  private class CalClassPageBuilder {
+  class CalClassPageBuilder {
 
     private String classId;
 
@@ -283,7 +286,7 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
 
     private Map<Part, List<Map<String, Object>>> partAttributes;
 
-    private CalClassPageBuilder begin(String classId) {
+    CalClassPageBuilder begin(String classId) {
       this.classId = classId;
       this.partAttributes = new HashMap<Part, List<Map<String,Object>>>(6);
       ClassAttributeProvider attributeProvider = attributeProviders.get(Part.container);
@@ -305,7 +308,7 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
       return this;
     }
 
-    private CalClassPageBuilder insert(Part part) {
+    CalClassPageBuilder insert(Part part) {
       JSONObject renderedPart = null;
 
       ClassAttributeProvider attributeProvider = attributeProviders.get(part);
@@ -340,7 +343,7 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
       return this;
     }
 
-    private JSONObject end() {
+    JSONObject end() {
       JSONObject returnCopy = null;
       try {
         returnCopy = new JSONObject(this.classPage.toString());
@@ -368,6 +371,7 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
       LOGGER.warn(e.getMessage(), e);
       deactivate(componentContext);
     }
+
     // cab't get an ImmutableMap to handle types so using plain HashMaqp
     this.attributeProviders = new HashMap<Part, ClassAttributeProvider>();
     this.attributeProviders.put(Part.container, new OracleClassPageContainerAttributeProvider());
@@ -376,12 +380,44 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
     this.attributeProviders.put(Part.instructors, new OracleClassPagePrimaryInstructorAttributeProvider());
     this.attributeProviders.put(Part.sections, new OracleClassPageSectionAttributeProvider());
 
-    this.renderers = new HashMap<Part, ClassPageRenderer>();
-    this.renderers.put(Part.container, new ClassPageContainerRenderer(repository, null));
-    this.renderers.put(Part.courseinfo, new ClassPageCourseInfoRenderer(repository, null));
-    this.renderers.put(Part.schedule, new ClassPageScheduleRenderer(repository, null));
-    this.renderers.put(Part.instructors, new ClassPagePrimaryInstructorRenderer(repository, null));
-    this.renderers.put(Part.sections, new ClassPageSectionRenderer(repository, null));
+//    try {
+//      JsonJcrNode template = loadTemplate();
+      this.renderers = new HashMap<Part, ClassPageRenderer>();
+      this.renderers.put(Part.container, new ClassPageContainerRenderer(repository, null));
+      this.renderers.put(Part.courseinfo, new ClassPageCourseInfoRenderer(repository, null));
+      this.renderers.put(Part.schedule, new ClassPageScheduleRenderer(repository, null));
+      this.renderers.put(Part.instructors, new ClassPagePrimaryInstructorRenderer(repository, null));
+      this.renderers.put(Part.sections, new ClassPageSectionRenderer(repository, null));
+//    } catch (JSONException e) {
+//      LOGGER.warn(e.getMessage(), e);
+//      deactivate(componentContext);
+//    } catch (RepositoryException e) {
+//      LOGGER.warn(e.getMessage(), e);
+//      deactivate(componentContext);
+//    }
+  }
+
+  private JsonJcrNode loadTemplate() throws JSONException, RepositoryException {
+    JsonJcrNode template = null;
+    javax.jcr.Session jcrSession = null;
+    try {
+      jcrSession = this.slingRepository.loginAdministrative(null);
+      Node classPageTemplateNode = jcrSession.getNode("/var/myberkeley/classpages/classpageprovision.json");
+      NodeIterator iter = classPageTemplateNode.getNodes();
+      Node contentNode = null;
+      while (iter.hasNext()) {
+        contentNode = iter.nextNode();
+        LOGGER.debug("contentNode is: " + contentNode);
+//        Object content = subNode.getProperties("jcr:content");
+//        LOGGER.debug("content is: " + content);
+      }
+      template = new JsonJcrNode(contentNode);
+      return template;
+    } finally {
+      if (jcrSession != null) {
+        jcrSession.logout();
+      }
+    }
   }
 
   @SuppressWarnings("deprecation")
@@ -392,7 +428,7 @@ public class CalClassPageProvisionService implements ClassPageProvisionService {
         this.connection.close();
       } catch (SQLException e) {
         LOGGER.info("Exception while closing dbConnection", e);
-        throw new ComponentException("Could not close connection");
+        throw new ComponentException("Could not close database connection");
       } finally {
         this.connection = null;
         this.jdbcConnectionService = null;

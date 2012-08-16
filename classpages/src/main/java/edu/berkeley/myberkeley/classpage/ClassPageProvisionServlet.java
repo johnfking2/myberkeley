@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
  * A GET request will return the provision JSON structure for the course.
  * A POST request will create or update the course.
  */
-@SlingServlet(methods = { "GET", "POST" }, paths = {"/system/myberkeley/classpages"}, 
+@SlingServlet(methods = { "GET", "POST" }, paths = {"/system/myberkeley/classpages"},
     resourceTypes = {STORE_RESOURCETYPE}, selectors = {"tidy"}, extensions = {"json"},
     generateService = true, generateComponent = true)
 
@@ -56,7 +56,7 @@ public class ClassPageProvisionServlet extends SlingAllMethodsServlet {
   protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response)
       throws ServletException, IOException {
     PrintWriter writer = response.getWriter();
-    // authorication check here
+    // authorization check here
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
     String classId = request.getParameter(PARAMS.classid.name());
